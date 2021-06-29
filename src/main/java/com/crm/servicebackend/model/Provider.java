@@ -2,6 +2,7 @@ package com.crm.servicebackend.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 @Entity
@@ -13,18 +14,18 @@ public class Provider {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false, unique = true)
     private Long id;
+    @Column(nullable = false)
+    private String name;
+    private String address;
+    private String phoneNumber;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "service_center_id")
     private ServiceCenter serviceCenter;
-    @Column(nullable = false)
-    private String providerName;
-    private String providerAddress;
-    private String providerTelephone;
 
-    public Provider(ServiceCenter serviceCenter, String providerName, String providerAddress, String providerTelephone) {
+    public Provider(ServiceCenter serviceCenter, String name, String address, String phoneNumber) {
         this.serviceCenter = serviceCenter;
-        this.providerName = providerName;
-        this.providerAddress = providerAddress;
-        this.providerTelephone = providerTelephone;
+        this.name = name;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
     }
 }

@@ -1,7 +1,6 @@
 package com.crm.servicebackend.repository;
 
 import com.crm.servicebackend.model.Discount;
-import com.crm.servicebackend.model.ServiceCenter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,6 +14,8 @@ public interface DiscountRepository extends JpaRepository<Discount, Long> {
     Boolean existsByIdAndServiceCenterId(Long discountId, Long serviceCenterId);
     Boolean existsByDiscountNameAndServiceCenterId(String discountName, Long serviceCenterId);
     Boolean existsByDiscountNameAndIdNotLikeAndServiceCenterId(String discountName, Long discountId, Long serviceCenterId);
-    @Query("select d from Discount d where d.serviceCenter.id =:serviceCenterId AND (d.discountName like %:title%)")
+    Boolean existsByPercentageAndServiceCenterId(int percentage, Long serviceCenterId);
+    Boolean existsByPercentageAndIdNotLikeAndServiceCenterId(int percentage,Long discountId, Long serviceCenterId);
+    @Query("select d from Discount d where d.serviceCenter.id =:serviceCenterId AND (concat(d.id,'') like %:title% OR d.discountName like %:title% OR concat(d.percentage, '') like %:title% )")
     Page<Discount> findAndFilter(Long serviceCenterId, String title, Pageable pageable);
 }

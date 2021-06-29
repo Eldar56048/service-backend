@@ -12,11 +12,9 @@ import javax.validation.constraints.PositiveOrZero;
 public class ClientAddDtoRequest {
     @NotBlank(message = "Полe Имя обязательно.")
     @Length(message = "Длина Имени должна быть больше нуля", min = 1)
-    @Pattern(regexp="^[a-zA-Z]}",message="Имя должна содержать только буквы")
     private String name;
     @NotBlank(message = "Поле Фамилия обязательно.")
-    @Length(message = "Длина название скидки должна быть больше нуля", min = 1)
-    @Pattern(regexp="^[a-zA-Z]}",message="Фамилия должна содержать только буквы")
+    @Length(message = "Длина Фамилии должна быть больше нуля", min = 1)
     private String surname;
     @NotBlank(message = "Телефон номер обязательно.")
     @Pattern(regexp = "[8][0-9]{10}", message = "Номер телефон не соответствует формату")

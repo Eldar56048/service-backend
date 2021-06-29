@@ -11,6 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface ServiceCenterRepository extends JpaRepository<ServiceCenter, Long> {
     Boolean existsByName(String name);
     Boolean existsByNameAndIdNotLike(String name, Long id);
-    @Query("select s from ServiceCenter s where (s.name like %:title% OR s.phoneNumber like %:title% OR s.address like %:title%)")
+    @Query("select s from ServiceCenter s where (s.name like %:title% OR s.phoneNumber like %:title% OR s.address like %:title% or concat(s.id, '') like %:title% or s.comment like %:title%)")
     Page<ServiceCenter> findAndFilter(String title, Pageable pageable);
 }

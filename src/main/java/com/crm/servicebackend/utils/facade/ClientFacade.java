@@ -7,7 +7,7 @@ import com.crm.servicebackend.model.Client;
 
 public class ClientFacade {
 
-    private static ClientDtoResponse modelToDtoResponse(Client model) {
+    public static ClientDtoResponse modelToDtoResponse(Client model) {
         ClientDtoResponse dto = new ClientDtoResponse();
         if (model.getId() != null)
             dto.setId(model.getId());
@@ -24,7 +24,7 @@ public class ClientFacade {
         return dto;
     }
 
-    private static Client addDtoToModel(ClientAddDtoRequest dto) {
+    public static Client addDtoToModel(ClientAddDtoRequest dto) {
         Client model = new Client();
         model.setName(dto.getName());
         model.setSurname(dto.getSurname());
@@ -32,7 +32,7 @@ public class ClientFacade {
         return model;
     }
 
-    private static Client updateDtoToModel(Client model, ClientUpdateDtoRequest dto) {
+    public static Client updateDtoToModel(Client model, ClientUpdateDtoRequest dto) {
         model.setName(dto.getName());
         model.setSurname(dto.getSurname());
         model.setPhoneNumber(dto.getPhoneNumber());

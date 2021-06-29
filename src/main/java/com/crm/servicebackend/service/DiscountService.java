@@ -32,6 +32,8 @@ public class DiscountService {
     public DiscountDtoResponse add(Long serviceCenterId, DiscountAddDtoRequest dto) {
         if (existsByDiscountNameAndServiceCenterId(dto.getDiscountName(), serviceCenterId))
             throw new DtoException("Скидка с таким названием уже существует","discount/exists-by-name");
+        if (existsByPercentageAndServiceCenterId(dto.getPercentage(), serviceCenterId))
+            throw new DtoException("Скидка с таким процентом уже существует","discount/exists-by-percent");
         Discount discount = addDtoToModel(dto);
         discount.setServiceCenter(serviceCenterService.get(serviceCenterId));
         return modelToDtoResponse(save(discount));
@@ -58,6 +60,8 @@ public class DiscountService {
     public DiscountDtoResponse update(Long discountId, Long serviceCenterId, DiscountUpdateDtoRequest dto) {
         if (existsByDiscountNameAndIdNotLikeAndServiceCenterId(dto.getDiscountName(), discountId, serviceCenterId))
             throw new DtoException("Скидка с таким названием уже существует","discount/exists-by-name");
+        if (existsByPercentageAndIdNotLikeAndServiceCenterId(dto.getPercentage(), discountId, serviceCenterId))
+            throw new DtoException("Скидка с таким процентом уже существует","discount/exists-by-percent");
         Discount discount = get(discountId, serviceCenterId);
         discount = updateDtoToModel(discount, dto);
         return modelToDtoResponse(save(discount));
@@ -102,5 +106,13 @@ public class DiscountService {
 
     public Boolean existsByIdAndServiceCenterId(Long discountId, Long serviceCenterId) {
         return repository.existsByIdAndServiceCenterId(discountId, serviceCenterId);
+    }
+
+    public Boolean existsByPercentageAndServiceCenterId(int percentage, Long serviceCenterId) {
+        return repository.existsByPercentageAndServiceCenterId(percentage, serviceCenterId);
+    }
+
+    public Boolean existsByPercentageAndIdNotLikeAndServiceCenterId(int percentage, Long discountId, Long serviceCenterId) {
+        return repository.existsByPercentageAndIdNotLikeAndServiceCenterId(percentage, discountId, serviceCenterId);
     }
 }
