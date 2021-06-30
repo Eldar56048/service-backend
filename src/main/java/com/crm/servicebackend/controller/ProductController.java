@@ -12,6 +12,7 @@ import com.crm.servicebackend.service.ServiceCenterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +34,7 @@ public class ProductController {
     }
 
     @GetMapping("/select")
+    @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<?> getAllForSelect(@AuthenticationPrincipal User user) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
@@ -41,6 +43,7 @@ public class ProductController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> getAll(
             @AuthenticationPrincipal User user,
             @RequestParam(defaultValue = "1") int page,
@@ -61,6 +64,7 @@ public class ProductController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> add(@AuthenticationPrincipal User user, @Valid @RequestBody ProductAddDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
@@ -69,6 +73,7 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> get(@AuthenticationPrincipal User user, @PathVariable Long productId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
@@ -79,6 +84,7 @@ public class ProductController {
     }
 
     @GetMapping("/top-sale")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> getProductTopSale(@AuthenticationPrincipal User user) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
@@ -87,6 +93,7 @@ public class ProductController {
     }
 
     @GetMapping("/sold-count")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> getSoldProductCount(@AuthenticationPrincipal User user) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
@@ -95,6 +102,7 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}/sold")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> getProductSoldCount(@AuthenticationPrincipal User user,@PathVariable Long productId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
@@ -105,6 +113,7 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}/monthly/sold")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> getMonthlySold(@AuthenticationPrincipal User user, @PathVariable long productId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
@@ -115,6 +124,7 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}/last/purchase")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> getLastPurchasePrice(@AuthenticationPrincipal User user,@PathVariable long productId){
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
@@ -125,6 +135,7 @@ public class ProductController {
     }
 
     @PostMapping("/{id}")
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> update(@AuthenticationPrincipal User user, @PathVariable long productId,@RequestBody ProductUpdateDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if (dto.getId()!=productId)
@@ -137,6 +148,7 @@ public class ProductController {
     }
 
     @GetMapping("/top-profit-products")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> getTopProfitProducts(@AuthenticationPrincipal User user, @RequestParam(defaultValue = "5") Long limit) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
@@ -145,6 +157,7 @@ public class ProductController {
     }
 
     @PostMapping("/{productId}/add")
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> addProductToStorage(@AuthenticationPrincipal User user, @PathVariable long productId, @Valid @RequestBody AddProductToStorageDtoRequest dto){
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
@@ -157,6 +170,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{productId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> deleteProduct(@AuthenticationPrincipal User user, @PathVariable long productId){
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
@@ -168,6 +182,7 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}/history/incoming")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> getProductHistoryIncoming(
             @AuthenticationPrincipal User user,
             @RequestParam(defaultValue = "1") int page,
@@ -191,6 +206,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{productId}/history/incoming/{historyId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> deleteIncomingHistory(@AuthenticationPrincipal User user, @PathVariable long productId,@PathVariable  long historyId){
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))

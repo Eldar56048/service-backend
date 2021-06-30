@@ -22,26 +22,22 @@ import java.util.Map;
 
 @org.springframework.stereotype.Service
 public class ProductService {
-    private final ProductRepository repository;
-    private final ServiceCenterService serviceCenterService;
-    private final StorageService storageService;
-    private final ProviderService providerService;
-    private final IncomingHistoryService incomingHistoryService;
-    private final ReceivingHistoryService receivingHistoryService;
-    private final OrderItemService orderItemService;
-    private final OrderService orderService;
-
     @Autowired
-    public ProductService(ProductRepository repository, ServiceCenterService serviceCenterService, StorageService storageService, ProviderService providerService, IncomingHistoryService incomingHistoryService, ReceivingHistoryService receivingHistoryService, OrderItemService orderItemService, OrderService orderService) {
-        this.repository = repository;
-        this.serviceCenterService = serviceCenterService;
-        this.storageService = storageService;
-        this.providerService = providerService;
-        this.incomingHistoryService = incomingHistoryService;
-        this.receivingHistoryService = receivingHistoryService;
-        this.orderItemService = orderItemService;
-        this.orderService = orderService;
-    }
+    private  ProductRepository repository;
+    @Autowired
+    private  ServiceCenterService serviceCenterService;
+    @Autowired
+    private  StorageService storageService;
+    @Autowired
+    private  ProviderService providerService;
+    @Autowired
+    private  IncomingHistoryService incomingHistoryService;
+    @Autowired
+    private  ReceivingHistoryService receivingHistoryService;
+    @Autowired
+    private  OrderItemService orderItemService;
+    @Autowired
+    private  OrderService orderService;
 
     public ProductDtoResponse add(Long serviceCenterId, ProductAddDtoRequest dto) {
         if (existsByNameAndServiceCenterId(dto.getName(), serviceCenterId))

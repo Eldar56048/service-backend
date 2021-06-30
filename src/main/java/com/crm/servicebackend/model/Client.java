@@ -2,6 +2,7 @@ package com.crm.servicebackend.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 @Entity
@@ -32,5 +33,12 @@ public class Client {
         this.phoneNumber = phoneNumber;
         this.discount = discount;
         this.serviceCenter = serviceCenter;
+    }
+
+    public Client(String name, String surname, String phoneNumber, Discount discount) {
+        this.name = name;
+        this.surname = surname;
+        this.phoneNumber = phoneNumber;
+        this.discount = discount;
     }
 }

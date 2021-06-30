@@ -11,4 +11,6 @@ import javax.transaction.Transactional;
 public interface ReceivingHistoryRepository extends JpaRepository<ReceivingHistory, Long> {
     @Transactional
     void deleteAllByOrderItemProductAndServiceCenterId(Product product, Long serviceCenterId);
+    ReceivingHistory findByOrderItemId(long id);
+
 }

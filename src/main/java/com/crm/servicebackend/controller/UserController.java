@@ -4,6 +4,7 @@ import com.crm.servicebackend.dto.requestDto.user.UserAddDtoRequest;
 import com.crm.servicebackend.dto.requestDto.user.UserUpdateDtoRequest;
 import com.crm.servicebackend.exception.domain.DtoException;
 import com.crm.servicebackend.exception.domain.ResourceNotFoundException;
+import com.crm.servicebackend.model.Role;
 import com.crm.servicebackend.model.User;
 import com.crm.servicebackend.service.ExperienceModelService;
 import com.crm.servicebackend.service.ServiceCenterService;
@@ -16,10 +17,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/users")
-@PreAuthorize("isAuthenticated()&&hasAuthority('ADMIN')")
+@PreAuthorize("hasAuthority('ADMIN')")
 public class UserController {
     private final UserService service;
     private final ExperienceModelService experienceModelService;
@@ -34,7 +36,7 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<?> getAll(
-            @RequestParam Long serviceCenterId,
+            @AuthenticationPrincipal User user,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "1") int size,
             @RequestParam(defaultValue = "id") String sortBy,
@@ -42,6 +44,7 @@ public class UserController {
             @RequestParam(defaultValue = "") String title
     ) {
         Map<String, Object> response;
+        Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
             throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
         if (title.length()<=0)
@@ -49,6 +52,13 @@ public class UserController {
         else
             response = service.getAllAndFilter(serviceCenterId,page-1, size, sortBy, orderBy, title);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/roles/all")
+    public ResponseEntity<?> getAllRoles(){
+        Set<Role> roles = Set.of(Role.values());
+        roles.remove(Role.OWNER);
+        return ResponseEntity.ok(roles);
     }
 
     @PutMapping

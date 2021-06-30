@@ -7,6 +7,7 @@ import com.crm.servicebackend.dto.requestDto.user.UserAddDtoRequest;
 import com.crm.servicebackend.dto.requestDto.user.UserUpdateDtoRequest;
 import com.crm.servicebackend.exception.domain.DtoException;
 import com.crm.servicebackend.exception.domain.ResourceNotFoundException;
+import com.crm.servicebackend.model.Role;
 import com.crm.servicebackend.model.User;
 import com.crm.servicebackend.service.ExperienceModelService;
 import com.crm.servicebackend.service.ServiceCenterService;
@@ -157,5 +158,11 @@ public class ServiceCenterController {
         if(!service.existsById(serviceCenterId))
             throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
         return ResponseEntity.ok(experienceModelService.add(serviceCenterId, dto));
+    }
+
+    @GetMapping("/roles/all")
+    @PreAuthorize("hasAuthority('OWNER')")
+    public ResponseEntity<?> getAllRoles(){
+        return ResponseEntity.ok(Role.values());
     }
 }

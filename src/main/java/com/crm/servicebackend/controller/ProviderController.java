@@ -10,6 +10,7 @@ import com.crm.servicebackend.service.ServiceCenterService;
 import com.crm.servicebackend.utils.facade.ProviderFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +30,7 @@ public class ProviderController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<?> getAll(
             @AuthenticationPrincipal User user,
             @RequestParam(defaultValue = "1") int page,
@@ -49,6 +51,7 @@ public class ProviderController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> add(@AuthenticationPrincipal User user, @Valid @RequestBody ProviderAddDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
@@ -57,6 +60,7 @@ public class ProviderController {
     }
 
     @GetMapping("/{providerId}")
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> get(@AuthenticationPrincipal User user, @PathVariable Long providerId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
@@ -67,6 +71,7 @@ public class ProviderController {
     }
 
     @PostMapping("/{providerId}")
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> update(@AuthenticationPrincipal User user, @PathVariable Long providerId, @Valid @RequestBody ProviderUpdateDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if (dto.getId()!=providerId)
@@ -79,6 +84,7 @@ public class ProviderController {
     }
 
     @DeleteMapping("/{providerId}")
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> delete(@AuthenticationPrincipal User user,@PathVariable Long providerId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))

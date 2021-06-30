@@ -2,6 +2,7 @@ package com.crm.servicebackend.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 @Entity
@@ -38,7 +39,7 @@ public class OrderItem {
     private int lastPrice;
     private int userExperienceCoefficient;
 
-    public OrderItem(ServiceCenter serviceCenter, int quantity, Order order, Service service, User user) {
+    public OrderItem(int quantity, Order order, Service service, User user) {
         this.orderId = order.getId();
         this.serviceCenter = serviceCenter;
         this.service = service;
@@ -49,7 +50,7 @@ public class OrderItem {
         this.soldPrice = service.getPrice();
         this.servicePercentage = service.getPercentage();
     }
-    public OrderItem(ServiceCenter serviceCenter, int quantity, Order order, Product product, User user, int lastPrice) {
+    public OrderItem(int quantity, Order order, Product product, User user, int lastPrice) {
         this.orderId = order.getId();
         this.serviceCenter = serviceCenter;
         this.product = product;

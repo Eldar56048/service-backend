@@ -10,6 +10,7 @@ import com.crm.servicebackend.service.TypeService;
 import com.crm.servicebackend.utils.facade.TypeFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +30,7 @@ public class TypeController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<?> getAll(
             @AuthenticationPrincipal User user,
             @RequestParam(defaultValue = "1") int page,
@@ -49,6 +51,7 @@ public class TypeController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> add(@AuthenticationPrincipal User user, @Valid @RequestBody TypeAddDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
@@ -57,6 +60,7 @@ public class TypeController {
     }
 
     @GetMapping("/{typeId}")
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> get(@AuthenticationPrincipal User user, @PathVariable Long typeId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
@@ -67,6 +71,7 @@ public class TypeController {
     }
 
     @PostMapping("/{typeId}")
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> update(@AuthenticationPrincipal User user, @PathVariable Long typeId, @Valid @RequestBody TypeUpdateDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if (dto.getId()!=typeId)
@@ -79,6 +84,7 @@ public class TypeController {
     }
 
     @DeleteMapping("/{typeId}")
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> delete(@AuthenticationPrincipal User user,@PathVariable Long typeId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))

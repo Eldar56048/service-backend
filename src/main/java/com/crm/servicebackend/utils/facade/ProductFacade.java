@@ -3,6 +3,7 @@ package com.crm.servicebackend.utils.facade;
 import com.crm.servicebackend.dto.requestDto.product.ProductAddDtoRequest;
 import com.crm.servicebackend.dto.requestDto.product.ProductUpdateDtoRequest;
 import com.crm.servicebackend.dto.responseDto.product.ProductDtoResponse;
+import com.crm.servicebackend.dto.responseDto.product.ProductItemDtoResponse;
 import com.crm.servicebackend.model.Product;
 import com.crm.servicebackend.model.Storage;
 
@@ -32,6 +33,15 @@ public class ProductFacade {
             dto.setDescription(model.getProduct().getDescription());
         dto.setPrice(model.getProduct().getPrice());
         dto.setStorage(model.getQuantity());
+        return dto;
+    }
+
+    public static ProductItemDtoResponse modelToItemDtoResponse(Product model) {
+        ProductItemDtoResponse dto = new ProductItemDtoResponse();
+        if (model.getId() != null)
+            dto.setId(model.getId());
+        if (model.getName() != null)
+            dto.setName(model.getName());
         return dto;
     }
 

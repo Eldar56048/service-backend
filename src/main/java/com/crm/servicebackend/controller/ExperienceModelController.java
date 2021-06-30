@@ -10,6 +10,7 @@ import com.crm.servicebackend.service.ServiceCenterService;
 import com.crm.servicebackend.utils.facade.ExperienceModelFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/experience-models")
+@PreAuthorize("hasAuthority('ADMIN')")
 public class ExperienceModelController {
 
     private final ExperienceModelService service;

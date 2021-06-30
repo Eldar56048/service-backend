@@ -3,6 +3,7 @@ package com.crm.servicebackend.utils.facade;
 import com.crm.servicebackend.dto.requestDto.service.ServiceAddDtoRequest;
 import com.crm.servicebackend.dto.requestDto.service.ServiceUpdateDtoRequest;
 import com.crm.servicebackend.dto.responseDto.service.ServiceDtoResponse;
+import com.crm.servicebackend.dto.responseDto.service.ServiceItemDtoResponse;
 import com.crm.servicebackend.model.Role;
 import com.crm.servicebackend.model.Service;
 import com.crm.servicebackend.model.User;
@@ -37,5 +38,14 @@ public class ServiceFacade {
             model.setPercentage(dto.getPercentage());
         model.setPrice(dto.getPrice());
         return model;
+    }
+
+    public static ServiceItemDtoResponse modelToItemDto(Service model) {
+        ServiceItemDtoResponse dto = new ServiceItemDtoResponse();
+        if (model.getId() != null)
+            dto.setId(model.getId());
+        if (model.getName() != null)
+            dto.setName(model.getName());
+        return dto;
     }
 }

@@ -25,4 +25,8 @@ public class OrderItemService {
     public List<OrderItem> getAllByServiceAndServiceCenterId(com.crm.servicebackend.model.Service service, Long serviceCenterId) {
         return repository.getAllByServiceAndServiceCenterId(service, serviceCenterId);
     }
+
+    public OrderItem save(OrderItem orderItem) {
+        return repository.save(orderItem);
+    }
 }

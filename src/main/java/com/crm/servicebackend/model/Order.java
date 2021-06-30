@@ -2,6 +2,7 @@ package com.crm.servicebackend.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -63,8 +64,10 @@ public class Order {
     private String discountName;
     @Column(nullable = false)
     private int discountPercent;
+    @Column(nullable = false)
+    private String token;
 
-    public Order(ServiceCenter serviceCenter, String clientName, String phoneNumber, String problem, User acceptedUser, Type type, Model model, String modelCompany) {
+    public Order(String clientName, String phoneNumber, String problem, User acceptedUser, Type type, Model model, String modelCompany) {
         this.serviceCenter = serviceCenter;
         this.clientName = clientName;
         this.phoneNumber = phoneNumber;
@@ -77,7 +80,7 @@ public class Order {
         this.modelCompany = modelCompany;
     }
 
-    public Order(ServiceCenter serviceCenter, String clientName, String phoneNumber, String problem, User acceptedUser, Type type, Model model, String modelCompany, String discountName, int discountPercent) {
+    public Order(String clientName, String phoneNumber, String problem, User acceptedUser, Type type, Model model, String modelCompany, String discountName, int discountPercent) {
         this.serviceCenter = serviceCenter;
         this.clientName = clientName;
         this.phoneNumber = phoneNumber;
@@ -92,8 +95,7 @@ public class Order {
         this.discountPercent = discountPercent;
     }
 
-    public Order(ServiceCenter serviceCenter, Client client, String problem, User acceptedUser, Type type, Model model, String modelCompany) {
-        this.serviceCenter = serviceCenter;
+    public Order(Client client, String problem, User acceptedUser, Type type, Model model, String modelCompany) {
         this.problem = problem;
         this.acceptedUser = acceptedUser;
         this.acceptedDate = new Date();
@@ -105,6 +107,7 @@ public class Order {
         this.discountPercent = client.getDiscount().getPercentage();
         this.client = client;
     }
+
 
     public void addOrderItem(OrderItem orderItem){
         this.items.add(orderItem);

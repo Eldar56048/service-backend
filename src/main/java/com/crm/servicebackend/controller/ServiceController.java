@@ -10,6 +10,7 @@ import com.crm.servicebackend.service.ServiceModelService;
 import com.crm.servicebackend.utils.facade.ServiceFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +30,7 @@ public class ServiceController {
     }
 
     @GetMapping("/select")
+    @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<?> getAllForSelect(@AuthenticationPrincipal User user) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
@@ -37,6 +39,7 @@ public class ServiceController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> getAll(
             @AuthenticationPrincipal User user,
             @RequestParam(defaultValue = "1") int page,
@@ -57,6 +60,7 @@ public class ServiceController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> add(@AuthenticationPrincipal User user, @Valid @RequestBody ServiceAddDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
@@ -65,6 +69,7 @@ public class ServiceController {
     }
 
     @GetMapping("/{serviceId}")
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> get(@AuthenticationPrincipal User user, @PathVariable Long serviceId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
@@ -75,6 +80,7 @@ public class ServiceController {
     }
 
     @GetMapping("/{serviceId}/sold")
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> getServiceSoldCount(@AuthenticationPrincipal User user,@PathVariable long serviceId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
@@ -85,6 +91,7 @@ public class ServiceController {
     }
 
     @GetMapping("/{serviceId}/monthly/sold")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> getMonthlySold(@PathVariable long serviceId, @AuthenticationPrincipal User user) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
@@ -95,6 +102,7 @@ public class ServiceController {
     }
 
     @GetMapping("/top-profit-services")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> getTopProfitServices(@AuthenticationPrincipal User user, @RequestParam(defaultValue = "5") int limit) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
@@ -103,6 +111,7 @@ public class ServiceController {
     }
 
     @GetMapping("/top-sale")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> getTopSale(@AuthenticationPrincipal User user) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
@@ -111,6 +120,7 @@ public class ServiceController {
     }
 
     @GetMapping("/sold-count")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> getSoldServiceCount(@AuthenticationPrincipal User user) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
@@ -119,6 +129,7 @@ public class ServiceController {
     }
 
     @PostMapping("/{serviceId}")
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> update(@AuthenticationPrincipal User user, @PathVariable Long serviceId, @Valid @RequestBody ServiceUpdateDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if (dto.getId()!=serviceId)
@@ -131,6 +142,7 @@ public class ServiceController {
     }
 
     @DeleteMapping("/{serviceId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> delete(@AuthenticationPrincipal User user,@PathVariable Long serviceId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))

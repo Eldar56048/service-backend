@@ -11,6 +11,7 @@ import com.crm.servicebackend.service.ServiceCenterService;
 import com.crm.servicebackend.utils.facade.ClientFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +34,7 @@ public class ClientController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<?> getAll(
             @AuthenticationPrincipal User user,
             @RequestParam(defaultValue = "1") int page,
@@ -53,6 +55,7 @@ public class ClientController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> add(@AuthenticationPrincipal User user, @Valid @RequestBody ClientAddDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
@@ -63,6 +66,7 @@ public class ClientController {
     }
 
     @GetMapping("/{clientId}")
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> get(@AuthenticationPrincipal User user, @PathVariable Long clientId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
@@ -73,6 +77,7 @@ public class ClientController {
     }
 
     @PostMapping("/{clientId}")
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> update(@AuthenticationPrincipal User user, @PathVariable Long clientId, @Valid @RequestBody ClientUpdateDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if (dto.getId()!=clientId)
@@ -87,6 +92,7 @@ public class ClientController {
     }
 
     @DeleteMapping("/{clientId}")
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> delete(@AuthenticationPrincipal User user, @PathVariable Long clientId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))

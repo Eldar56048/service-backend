@@ -4,6 +4,7 @@ import com.crm.servicebackend.dto.requestDto.user.UserAddDtoRequest;
 import com.crm.servicebackend.dto.requestDto.user.UserAddOwnerDtoRequest;
 import com.crm.servicebackend.dto.requestDto.user.UserUpdateDtoRequest;
 import com.crm.servicebackend.dto.responseDto.user.UserDtoResponse;
+import com.crm.servicebackend.dto.responseDto.user.UserItemDtoResponse;
 import com.crm.servicebackend.model.User;
 
 public class UserFacade {
@@ -64,6 +65,17 @@ public class UserFacade {
         dto.setRoles(model.getRoles());
         dto.setPhoneNumber(model.getPhoneNumber());
         dto.setExperienceModelId(model.getExperienceModelId());
+        return dto;
+    }
+
+    public static UserItemDtoResponse modelToItemDto(User model) {
+        UserItemDtoResponse dto = new UserItemDtoResponse();
+        if (model.getId() != null)
+            dto.setId(model.getId());
+        if (model.getName() != null)
+            dto.setName(model.getName());
+        if (model.getSurname() != null)
+            dto.setSurname(model.getSurname());
         return dto;
     }
 }
