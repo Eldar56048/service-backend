@@ -59,7 +59,7 @@ public class Smsc {
 
     public boolean send_sms(String phones, String message, int translit, String time, String id, int format, String sender, String query)
     {
-        boolean send = false;
+        boolean send = true;
         String[] formats = {"", "flash=1", "push=1", "hlr=1", "bin=1", "bin=2", "ping=1", "mms=1", "mail=1", "call=1", "viber=1", "soc=1"};
         String[] m = {};
 
@@ -78,16 +78,17 @@ public class Smsc {
         if (m.length > 1) {
             if (SMSC_DEBUG) {
                 if (Integer.parseInt(m[1]) > 0) {
-                    send = true;
                     System.out.println("Сообщение отправлено успешно. ID: " + m[0] + ", всего SMS: " + m[1] + ", стоимость: " + m[2] + ", баланс: " + m[3]);
                 }
                 else {
+                    send = false;
                     System.out.print("Ошибка №" + Math.abs(Integer.parseInt(m[1])));
                     System.out.println(Integer.parseInt(m[0])>0 ? (", ID: " + m[0]) : "");
                 }
             }
         }
         else {
+            send = false;
             System.out.println("Не получен ответ от сервера.");
         }
 

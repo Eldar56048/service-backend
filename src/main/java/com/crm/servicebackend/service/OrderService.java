@@ -2,12 +2,14 @@ package com.crm.servicebackend.service;
 
 import com.crm.servicebackend.dto.requestDto.order.OrderAddDtoRequest;
 import com.crm.servicebackend.dto.responseDto.order.*;
+import com.crm.servicebackend.dto.responseDto.orderItem.OrderItemOrderDtoResponse;
 import com.crm.servicebackend.dto.responseDto.statistics.Count;
 import com.crm.servicebackend.exception.domain.DtoException;
 import com.crm.servicebackend.model.*;
 import com.crm.servicebackend.repository.OrderRepository;
 import com.crm.servicebackend.utils.RandomGenerator;
 import com.crm.servicebackend.utils.facade.OrderFacade;
+import com.crm.servicebackend.utils.facade.OrderItemFacade;
 import com.crm.servicebackend.utils.facade.PaginationResponseFacade;
 import com.crm.servicebackend.utils.smsc.Smsc;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +69,24 @@ public class OrderService {
         return PaginationResponseFacade.response(pageToDtoPage(repository.findAllByServiceCenterIdAndFilter(serviceCenterId, title, pageable)));
     }
 
+    public Map<String, Object> getAllByClient(Long serviceCenterId, Long clientId, int page, int size, String sortBy, String orderBy){
+        Pageable pageable;
+        if (orderBy.equals("asc"))
+            pageable = PageRequest.of(page, size, Sort.by(sortBy).ascending());
+        else
+            pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
+        return PaginationResponseFacade.response(pageToDtoPage(repository.findAllByServiceCenterIdAndClientId(serviceCenterId,clientId, pageable)));
+    }
+
+    public Map<String, Object> getAllByClientAndFilter(Long serviceCenterId, Long clientId, int page, int size, String sortBy, String orderBy, String title){
+        Pageable pageable;
+        if (orderBy.equals("asc"))
+            pageable = PageRequest.of(page, size, Sort.by(sortBy).ascending());
+        else
+            pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
+        return PaginationResponseFacade.response(pageToDtoPage(repository.findAllByServiceCenterIdAndClientAndFilter(serviceCenterId,clientId, title, pageable)));
+    }
+
     public OrderForListDtoResponse add(Long serviceCenterId, User user, OrderAddDtoRequest dto){
         Type type = typeService.get(dto.getType_id(), serviceCenterId);
         Model model = modelService.get(dto.getModel_id(), serviceCenterId);
@@ -101,6 +121,7 @@ public class OrderService {
         else {
             order = new Order(dto.getClientId(), dto.getClient_number(), dto.getProblem(), user, type, model,dto.getModelType(),discount.getDiscountName(),discount.getPercentage());
         }
+        order.setDiscount(discount);
         order.setNotified(false);
         order.setToken(RandomGenerator.generate(8));
         order.setServiceCenter(serviceCenterService.get(serviceCenterId));
@@ -143,6 +164,7 @@ public class OrderService {
             order.setClientName(dto.getClientId());
             order.setPhoneNumber(dto.getClient_number());
         }
+        order.setDiscount(discount);
         order.setDiscountName(discount.getDiscountName());
         order.setDiscountPercent(discount.getPercentage());
         order.setType(typeService.get(dto.getType_id(), serviceCenterId));
@@ -156,7 +178,7 @@ public class OrderService {
         return repository.getOrdersCount(serviceCenterId);
     }
 
-    public OrderItem addProductToOrder(Long orderId, OrderAddProductDtoRequest dto, Long serviceCenterId, User user){
+    public OrderItemOrderDtoResponse addProductToOrder(Long orderId, OrderAddProductDtoRequest dto, Long serviceCenterId, User user){
         Order order = get(orderId, serviceCenterId);
         Product product = productService.get(dto.getProduct_id(), serviceCenterId);
         Storage storage = storageService.get(dto.getProduct_id(), serviceCenterId);
@@ -173,10 +195,10 @@ public class OrderService {
         order.addOrderItem(orderItem);
         save(order);
         receivingHistoryService.save(receivingHistory);
-        return orderItem;
+        return OrderItemFacade.modelToOrdersOrderItemDtoResponse(orderItem);
     }
 
-    public OrderItem addServiceToOrder(Long orderId, Long serviceCenterId, OrderAddServiceDtoRequest model, User user){
+    public OrderItemOrderDtoResponse addServiceToOrder(Long orderId, Long serviceCenterId, OrderAddServiceDtoRequest model, User user){
         Service service = serviceModelService.get(model.getService_id(), serviceCenterId);
         Order order = get(orderId, serviceCenterId);
         OrderItem orderItem = new OrderItem(model.getQuantity(), order, service,user);
@@ -184,7 +206,7 @@ public class OrderService {
         orderItem=orderItemService.save(orderItem);
         order.addOrderItem(orderItem);
         save(order);
-        return orderItem;
+        return OrderItemFacade.modelToOrdersOrderItemDtoResponse(orderItem);
     }
 
     public OrderDtoResponse doneOrder(Long orderId, Long serviceCenterId,User user){
@@ -217,6 +239,9 @@ public class OrderService {
                 "Цена: " + order.getPrice() + "\n" +
                 "С уважением команда "+order.getServiceCenter().getName();
         boolean send = smsc.send_sms(order.getPhoneNumber(), message, 1, "", "", 0, "", "");
+        if (send == false) {
+            throw new DtoException("Клиент не уведомлен", "order/not-notified");
+        }
         order.setNotified(send);
         return modelToDtoResponse(save(order));
     }
@@ -277,7 +302,7 @@ public class OrderService {
         }
     }*/
 
-    public Order setPaymentType(Long orderId, Long serviceCenterId,String type){
+    public OrderDtoResponse setPaymentType(Long orderId, Long serviceCenterId,String type){
         Order order = get(orderId, serviceCenterId);
         TypesOfPayments typesOfPayments=TypesOfPayments.cash;
         switch (type){
@@ -294,10 +319,10 @@ public class OrderService {
         order.setTypesOfPayments(typesOfPayments);
         order.setStatus(Status.GIVEN);
         order.setGaveDate(new Date());
-        return save(order);
+        return modelToDtoResponse(save(order));
     }
 
-    public Order updatePaymentType(Long orderId, Long serviceCenterId,String payment){
+    public OrderDtoResponse updatePaymentType(Long orderId, Long serviceCenterId,String payment){
         Order order = get(orderId, serviceCenterId);
         switch (payment){
             case "cash":
@@ -310,7 +335,7 @@ public class OrderService {
                 order.setTypesOfPayments(TypesOfPayments.contract);
                 break;
         }
-        return save(order);
+        return modelToDtoResponse(save(order));
     }
 
     public Page<OrderForListDtoResponse> pageToDtoPage(Page<Order> modelPage) {
@@ -328,6 +353,10 @@ public class OrderService {
 
     public Order get(Long orderId, Long serviceCenterId) {
         return repository.findByIdAndServiceCenterId(orderId, serviceCenterId);
+    }
+
+    public boolean existsByIdAndServiceCenterId(Long orderId, Long serviceCenterId) {
+        return repository.existsByIdAndServiceCenterId(orderId, serviceCenterId);
     }
 
     public  boolean  onlyDigits(String str, int n)

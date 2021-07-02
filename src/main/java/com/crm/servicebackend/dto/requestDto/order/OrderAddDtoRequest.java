@@ -6,7 +6,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Positive;
 
 @Data
 public class OrderAddDtoRequest {
@@ -23,12 +23,12 @@ public class OrderAddDtoRequest {
     @Length(message = "Поле не должно быть пустым", min = 1)
     private String modelType;
     @NotNull(message = "Поле id обязательно")
-    @PositiveOrZero(message = "id не может быть негативным числом")
+    @Positive(message = "id не может быть негативным числом")
     private Long type_id;
     @NotNull(message = "Поле id обязательно")
-    @PositiveOrZero(message = "id не может быть негативным числом")
+    @Positive(message = "id не может быть негативным числом")
     private Long model_id;
     @NotNull(message = "Поле id обязательно")
-    @PositiveOrZero(message = "id не может быть негативным числом")
+    @Positive(message = "id не может быть негативным числом")
     private Long discount_id;
 }

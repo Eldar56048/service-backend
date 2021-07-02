@@ -134,9 +134,9 @@ public class ProductController {
         return ResponseEntity.ok(service.getLastPrice(productId, serviceCenterId));
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("/{productId}")
     @PreAuthorize("hasAuthority('MODERATOR')")
-    public ResponseEntity<?> update(@AuthenticationPrincipal User user, @PathVariable long productId,@RequestBody ProductUpdateDtoRequest dto) {
+    public ResponseEntity<?> update(@AuthenticationPrincipal User user, @PathVariable long productId, @Valid @RequestBody ProductUpdateDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if (dto.getId()!=productId)
             throw new DtoException("Два разных id", "product/two-another-id");
@@ -216,7 +216,7 @@ public class ProductController {
         if (!incomingHistoryService.existsByIdAndProductIdAndServiceCenterId(historyId, productId, serviceCenterId)) {
             throw new ResourceNotFoundException("История добавление товара с идентификатором № "+historyId+" не найдено", "incoming-history/not-found");
         }
-        service.deleteIncomingHistory(historyId,productId,historyId);
+        service.deleteIncomingHistory(serviceCenterId,productId,historyId);
         return ResponseEntity.status(HttpStatus.OK).body("product/incoming-history-successfully-deleted");
     }
 }

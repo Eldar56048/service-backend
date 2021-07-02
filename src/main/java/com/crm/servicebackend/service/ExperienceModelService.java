@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -37,6 +38,10 @@ public class ExperienceModelService {
         ExperienceModel experienceModel = addDtoToModel(dto);
         experienceModel.setServiceCenter(serviceCenterService.get(serviceCenterId));
         return modelToDtoResponse(save(experienceModel));
+    }
+
+    public List<ExperienceModelDtoResponse> getAll(Long serviceCenterId) {
+        return ExperienceModelFacade.modelListToDtoResponseList(this.repository.getAllByServiceCenterId(serviceCenterId));
     }
 
     public Map<String, Object> getAll(Long serviceCenterId, int page, int size, String sortBy, String orderBy){

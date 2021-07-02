@@ -7,6 +7,7 @@ import com.crm.servicebackend.exception.domain.ResourceNotFoundException;
 import com.crm.servicebackend.model.User;
 import com.crm.servicebackend.service.ClientService;
 import com.crm.servicebackend.service.DiscountService;
+import com.crm.servicebackend.service.OrderService;
 import com.crm.servicebackend.service.ServiceCenterService;
 import com.crm.servicebackend.utils.facade.ClientFacade;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class ClientController {
     private final ClientService service;
     private final DiscountService discountService;
     private final ServiceCenterService serviceCenterService;
+
+    @Autowired
+    private OrderService orderService;
 
     @Autowired
     public ClientController(ClientService service, DiscountService discountService, ServiceCenterService serviceCenterService) {
@@ -51,6 +55,41 @@ public class ClientController {
             response = service.getAll(serviceCenterId,page-1, size, sortBy, orderBy);
         else
             response = service.getAllAndFilter(serviceCenterId,page-1, size, sortBy, orderBy, title);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/select")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<?> getAllForSelect(
+            @AuthenticationPrincipal User user
+    ) {
+        Long serviceCenterId = user.getServiceCenter().getId();
+        if(!serviceCenterService.existsById(serviceCenterId))
+            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+       return ResponseEntity.ok(service.getAllForSelect(serviceCenterId));
+    }
+
+    @GetMapping("/{clientId}/orders")
+    @PreAuthorize("hasAuthority('MODERATOR')")
+    public ResponseEntity<?> getAllClientOrders(
+            @AuthenticationPrincipal User user,
+            @PathVariable Long clientId,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "1") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "desc") String orderBy,
+            @RequestParam(defaultValue = "") String title
+    ) {
+        Long serviceCenterId = user.getServiceCenter().getId();
+        Map<String, Object> response;
+        if(!serviceCenterService.existsById(serviceCenterId))
+            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+        if (!service.existsByIdAndServiceCenterId(clientId, serviceCenterId))
+            throw new ResourceNotFoundException("Клиент с идентификатором № "+clientId+" не найдено", "client/not-found");
+        if (title.length()<=0)
+            response = orderService.getAllByClient(serviceCenterId,clientId, page-1, size, sortBy, orderBy);
+        else
+            response = orderService.getAllByClientAndFilter(serviceCenterId, clientId,page-1, size, sortBy, orderBy, title);
         return ResponseEntity.ok(response);
     }
 

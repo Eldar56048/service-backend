@@ -5,7 +5,7 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Positive;
 
 @Data
 public class ProductAddDtoRequest {
@@ -16,6 +16,6 @@ public class ProductAddDtoRequest {
     @Length(message = "Длина описание товара должна быть больше нуля", min = 1)
     private String description;
     @NotNull(message = "Поле цена обязательно.")
-    @PositiveOrZero(message = "Значение поле должно быть положительным")
+    @Positive(message = "Значение поле должно быть положительным")
     private int price;
 }

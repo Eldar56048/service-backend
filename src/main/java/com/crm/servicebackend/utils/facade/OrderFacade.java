@@ -51,6 +51,8 @@ public class OrderFacade {
             dto.setDiscountName(model.getDiscountName());
         if (model.getToken() != null)
             dto.setToken(model.getToken());
+        if (model.getGuaranteeDate() != null)
+            dto.setGuaranteeDate(model.getGuaranteeDate());
         dto.setDiscountPercent(model.getDiscountPercent());
         return dto;
     }
@@ -60,7 +62,7 @@ public class OrderFacade {
         if (model.getId() != null)
             dto.setId(model.getId());
         if (model.getClientName() != null)
-            dto.setName(model.getClientName());
+            dto.setClientName(model.getClientName());
         if (model.getStatus() != null)
             dto.setStatus(model.getStatus());
         if (model.getModel() != null)
@@ -69,8 +71,13 @@ public class OrderFacade {
             dto.setType(model.getType().getName());
         if (model.getAcceptedDate() != null)
             dto.setAccepted(model.getAcceptedDate());
-        if (model.getClient() != null)
+        if (model.getPhoneNumber() != null)
+            dto.setPhoneNumber(model.getPhoneNumber());
+        if (model.getClient() != null) {
             dto.setClientId(model.getClient().getId());
+            dto.setClientName(model.getClient().getSurname()+" "+model.getClient().getName());
+            dto.setPhoneNumber(model.getClient().getPhoneNumber());
+        }
         return dto;
     }
 }

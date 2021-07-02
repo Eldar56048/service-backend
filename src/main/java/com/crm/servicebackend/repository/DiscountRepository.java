@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface DiscountRepository extends JpaRepository<Discount, Long> {
     Page<Discount> findAllByServiceCenterId(Long serviceCenterId, Pageable pageable);
@@ -18,4 +20,5 @@ public interface DiscountRepository extends JpaRepository<Discount, Long> {
     Boolean existsByPercentageAndIdNotLikeAndServiceCenterId(int percentage,Long discountId, Long serviceCenterId);
     @Query("select d from Discount d where d.serviceCenter.id =:serviceCenterId AND (concat(d.id,'') like %:title% OR d.discountName like %:title% OR concat(d.percentage, '') like %:title% )")
     Page<Discount> findAndFilter(Long serviceCenterId, String title, Pageable pageable);
+    List<Discount> getAllByServiceCenterId(Long serviceCenterId);
 }

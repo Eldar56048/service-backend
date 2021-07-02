@@ -65,7 +65,7 @@ public class ServiceController {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
             throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
-        return ResponseEntity.ok(service.add(serviceCenterId, dto));
+        return ResponseEntity.ok(service.add(serviceCenterId, dto, user));
     }
 
     @GetMapping("/{serviceId}")

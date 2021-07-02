@@ -135,7 +135,7 @@ public class ServiceCenterController {
     }
 
     @GetMapping("/{serviceCenterId}/experience-models")
-    public ResponseEntity<?> getExperienceModels(
+    public ResponseEntity<?> getExperiences(
             @PathVariable Long serviceCenterId,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "1") int size,
@@ -151,6 +151,15 @@ public class ServiceCenterController {
         else
             response = experienceModelService.getAllAndFilter(serviceCenterId,page-1, size, sortBy, orderBy, title);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{serviceCenterId}/experience-models/list")
+    public ResponseEntity<?> getExperienceModels(
+            @PathVariable Long serviceCenterId
+    ) {
+        if(!service.existsById(serviceCenterId))
+            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+        return ResponseEntity.ok(experienceModelService.getAll(serviceCenterId));
     }
 
     @PutMapping("/{serviceCenterId}/experience-models")

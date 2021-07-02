@@ -7,5 +7,4 @@ public class DiscountDtoResponse {
     private Long id;
     private String discountName;
     private int percentage;
-    private Long serviceCenterId;
 }

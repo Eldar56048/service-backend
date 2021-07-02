@@ -37,10 +37,10 @@ public class ServiceModelService {
         this.orderService = orderService;
     }
 
-    public ServiceDtoResponse add(Long serviceCenterId, ServiceAddDtoRequest dto) {
+    public ServiceDtoResponse add(Long serviceCenterId, ServiceAddDtoRequest dto, User user) {
         if (existsByNameAndServiceCenterId(dto.getName(), serviceCenterId))
             throw new DtoException("Услуга с таким наименованием уже существует","service/exists-by-name");
-        Service service = addDtoToModel(dto);
+        Service service = addDtoToModel(dto, user);
         service.setServiceCenter(serviceCenterService.get(serviceCenterId));
         return modelToDtoResponse(save(service));
     }
@@ -112,8 +112,8 @@ public class ServiceModelService {
         return ServiceFacade.updateDtoToModel(model, dto, user);
     }
 
-    public Service addDtoToModel(ServiceAddDtoRequest dto) {
-        return ServiceFacade.addDtoToModel(dto);
+    public Service addDtoToModel(ServiceAddDtoRequest dto, User user) {
+        return ServiceFacade.addDtoToModel(dto, user);
     }
 
     public Service save(Service service) {

@@ -17,4 +17,5 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     Boolean existsByIdAndServiceCenterId(Long itemId, Long serviceCenterId);
     List<OrderItem> getAllByProductAndServiceCenterId(Product product, Long serviceCenterId);
     List<OrderItem> getAllByServiceAndServiceCenterId(Service service, Long serviceCenterId);
+    Boolean existsByIdAndServiceCenterIdAndOrderId(Long id, Long serviceCenterId, Long orderId);
 }

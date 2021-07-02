@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -98,6 +99,10 @@ public class DiscountService {
 
     public Boolean existsByDiscountNameAndIdNotLikeAndServiceCenterId(String name, Long discountId, Long serviceCenterId) {
         return repository.existsByDiscountNameAndIdNotLikeAndServiceCenterId(name, discountId, serviceCenterId);
+    }
+
+    public List<DiscountDtoResponse> getAllForSelect(Long serviceCenterId) {
+        return DiscountFacade.modelListToDtoResponseList(repository.getAllByServiceCenterId(serviceCenterId));
     }
 
     public void delete(Long id) {

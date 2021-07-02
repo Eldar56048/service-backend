@@ -5,6 +5,9 @@ import com.crm.servicebackend.dto.requestDto.client.ClientUpdateDtoRequest;
 import com.crm.servicebackend.dto.responseDto.client.ClientDtoResponse;
 import com.crm.servicebackend.model.Client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ClientFacade {
 
     public static ClientDtoResponse modelToDtoResponse(Client model) {
@@ -19,9 +22,15 @@ public class ClientFacade {
             dto.setPhoneNumber(model.getPhoneNumber());
         if (model.getDiscount() != null)
             dto.setDiscount(DiscountFacade.modelToDtoResponse(model.getDiscount()));
-        if (model.getServiceCenter() != null)
-            dto.setServiceCenterId(model.getServiceCenter().getId());
         return dto;
+    }
+
+    public static List<ClientDtoResponse> modelListToDtoResponseList(List<Client> modelList) {
+        List<ClientDtoResponse> dtoList = new ArrayList<>();
+        for(Client model:modelList) {
+            dtoList.add(modelToDtoResponse(model));
+        }
+        return dtoList;
     }
 
     public static Client addDtoToModel(ClientAddDtoRequest dto) {

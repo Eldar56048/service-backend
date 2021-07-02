@@ -39,4 +39,5 @@ public class OrderDtoResponse {
     private String discountName;
     private int discountPercent;
     private String token;
+    private Date guaranteeDate;
 }

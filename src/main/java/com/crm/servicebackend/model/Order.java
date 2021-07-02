@@ -66,6 +66,7 @@ public class Order {
     private int discountPercent;
     @Column(nullable = false)
     private String token;
+    private Date guaranteeDate;
 
     public Order(String clientName, String phoneNumber, String problem, User acceptedUser, Type type, Model model, String modelCompany) {
         this.serviceCenter = serviceCenter;

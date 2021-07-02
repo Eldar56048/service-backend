@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface TypeRepository extends JpaRepository<Type, Long> {
     Page<Type> findAllByServiceCenterId(Long serviceCenterId, Pageable pageable);
@@ -16,4 +18,5 @@ public interface TypeRepository extends JpaRepository<Type, Long> {
     Boolean existsByNameAndIdNotLikeAndServiceCenterId(String name, Long typeId, Long serviceCenterId);
     @Query("select t from Type t where t.serviceCenter.id =:serviceCenterId AND (t.name like %:title% or concat(t.id, '') like %:title%)")
     Page<Type> findAndFilter(Long serviceCenterId, String title, Pageable pageable);
+    List<Type> getAllByServiceCenterId(Long serviceCenterId);
 }

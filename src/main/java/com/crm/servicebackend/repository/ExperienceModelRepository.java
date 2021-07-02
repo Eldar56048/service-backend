@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ExperienceModelRepository extends JpaRepository<ExperienceModel, Long> {
     Page<ExperienceModel> findAllByServiceCenterId(Long serviceCenterId, Pageable pageable);
@@ -18,4 +20,5 @@ public interface ExperienceModelRepository extends JpaRepository<ExperienceModel
     Boolean existsByCoefficientAndIdNotLikeAndServiceCenterId(int coefficient, Long experienceId, Long serviceCenterId);
     @Query("select e from ExperienceModel e where e.serviceCenter.id =:serviceCenterId AND (e.name like %:title% or concat(e.id, '') like %:title% or concat(e.coefficient, '') like %:title%)")
     Page<ExperienceModel> findAndFilter(Long serviceCenterId, String title, Pageable pageable);
+    List<ExperienceModel> getAllByServiceCenterId(Long serviceCenterId);
 }

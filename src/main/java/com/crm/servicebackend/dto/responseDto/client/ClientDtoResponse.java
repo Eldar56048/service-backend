@@ -10,5 +10,4 @@ public class ClientDtoResponse {
     private String surname;
     private String phoneNumber;
     private DiscountDtoResponse discount;
-    private Long serviceCenterId;
 }

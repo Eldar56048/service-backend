@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +30,13 @@ public class GlobalExceptionHandler {
         LOGGER.error(String.valueOf(exception));
         ErrorDetails errorDetails = new ErrorDetails(HttpStatus.NOT_FOUND.value(), new Date(), exception.getMessage(), request.getDescription(false), exception.getCode());
         return new ResponseEntity(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public ResponseEntity<?> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException exception, WebRequest request) {
+        LOGGER.error(String.valueOf(exception.getMessage()));
+        ErrorDetails errorDetails = new ErrorDetails(HttpStatus.BAD_REQUEST.value(), new Date(), "Невозможно удалить так как он уже используется", request.getDescription(false), "data/not-delete");
+        return new ResponseEntity(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(AuthException.class)

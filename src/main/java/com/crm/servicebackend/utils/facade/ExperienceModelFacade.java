@@ -5,6 +5,9 @@ import com.crm.servicebackend.dto.requestDto.experienceModel.ExperienceModelUpda
 import com.crm.servicebackend.dto.responseDto.experienceModel.ExperienceModelDtoResponse;
 import com.crm.servicebackend.model.ExperienceModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ExperienceModelFacade {
 
     public static ExperienceModelDtoResponse modelToDtoResponse(ExperienceModel model){
@@ -22,6 +25,14 @@ public class ExperienceModelFacade {
         model.setName(dto.getName());
         model.setCoefficient(dto.getCoefficient());
         return model;
+    }
+
+    public static List<ExperienceModelDtoResponse> modelListToDtoResponseList(List<ExperienceModel> modelList) {
+        List<ExperienceModelDtoResponse> dtoList = new ArrayList<>();
+        for(ExperienceModel model:modelList){
+            dtoList.add(modelToDtoResponse(model));
+        }
+        return dtoList;
     }
 
     public static ExperienceModel updateDtoToModel(ExperienceModel model, ExperienceModelUpdateDtoRequest dto) {

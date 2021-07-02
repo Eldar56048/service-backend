@@ -5,6 +5,9 @@ import com.crm.servicebackend.dto.requestDto.type.TypeUpdateDtoRequest;
 import com.crm.servicebackend.dto.responseDto.type.TypeDtoResponse;
 import com.crm.servicebackend.model.Type;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TypeFacade {
     public static TypeDtoResponse modelToDtoResponse(Type model) {
         TypeDtoResponse dto = new TypeDtoResponse();
@@ -13,6 +16,14 @@ public class TypeFacade {
         if (model.getName() != null)
             dto.setName(model.getName());
         return dto;
+    }
+
+    public static List<TypeDtoResponse> modelListToDtoResponseList(List<Type> modelList) {
+        List<TypeDtoResponse> dtoList = new ArrayList<>();
+        for (Type model:modelList) {
+            dtoList.add(modelToDtoResponse(model));
+        }
+        return dtoList;
     }
 
     public static Type addDtoToModel(TypeAddDtoRequest dto) {

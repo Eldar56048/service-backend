@@ -2,6 +2,8 @@ package com.crm.servicebackend.filter;
 
 import com.crm.servicebackend.exception.ErrorDetails;
 import com.crm.servicebackend.exception.domain.AuthException;
+import com.crm.servicebackend.model.User;
+import com.crm.servicebackend.service.UserService;
 import com.crm.servicebackend.utils.token.TokenProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -14,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -38,7 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     public String TOKEN_PREFIX;
 
     @Resource(name = "userService")
-    private UserDetailsService userDetailsService;
+    private UserService userDetailsService;
 
     @Autowired
     private TokenProvider jwtTokenUtil;
@@ -72,10 +73,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             handleUnAuthorizedError(req, res, new AuthException("Не удалось найти токен", "auth/not-token"));
         }
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-            if (jwtTokenUtil.validateToken(authToken, userDetails)) {
+            User user = userDetailsService.getByUsername(username);
+            if (user.getServiceCenter().isEnabled()==false){
+                logger.error("Сервисный центр не активен");
+                handleUnAuthorizedError(req, res, new AuthException("Ваш сервисный центр не активен", "service-center/not-active-token"));
+            }
+            else if (jwtTokenUtil.validateToken(authToken, userDetails)) {
                 UsernamePasswordAuthenticationToken authentication = jwtTokenUtil.getAuthenticationToken(authToken, SecurityContextHolder.getContext().getAuthentication(), userDetails);
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
                 logger.info("authenticated user " + username + ", setting security context");

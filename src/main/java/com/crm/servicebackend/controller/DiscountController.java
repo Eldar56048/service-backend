@@ -50,6 +50,15 @@ public class DiscountController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/select")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<?> getAllForSelect(@AuthenticationPrincipal User user) {
+        Long serviceCenterId = user.getServiceCenter().getId();
+        if(!serviceCenterService.existsById(serviceCenterId))
+            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+        return ResponseEntity.ok(service.getAllForSelect(serviceCenterId));
+    }
+
     @PutMapping
     @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> add(@AuthenticationPrincipal User user, @Valid @RequestBody DiscountAddDtoRequest dto) {

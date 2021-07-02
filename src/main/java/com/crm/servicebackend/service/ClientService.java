@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -53,6 +54,10 @@ public class ClientService {
         else
             pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
         return PaginationResponseFacade.response(pageToDtoPage(repository.findAndFilter(serviceCenterId, title, pageable)));
+    }
+
+    public List<ClientDtoResponse> getAllForSelect(Long serviceCenterId) {
+        return ClientFacade.modelListToDtoResponseList(repository.getAllByServiceCenterId(serviceCenterId));
     }
 
     public ClientDtoResponse update(Long clientId, Long serviceCenterId, ClientUpdateDtoRequest dto) {

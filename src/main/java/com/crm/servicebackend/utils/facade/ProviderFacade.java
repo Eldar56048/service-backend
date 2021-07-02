@@ -5,6 +5,9 @@ import com.crm.servicebackend.dto.requestDto.providers.ProviderUpdateDtoRequest;
 import com.crm.servicebackend.dto.responseDto.provider.ProviderDtoResponse;
 import com.crm.servicebackend.model.Provider;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ProviderFacade {
     public static ProviderDtoResponse modelToDtoResponse(Provider model) {
         ProviderDtoResponse dto = new ProviderDtoResponse();
@@ -17,6 +20,14 @@ public class ProviderFacade {
         if (model.getPhoneNumber() != null)
             dto.setPhoneNumber(model.getPhoneNumber());
         return dto;
+    }
+
+    public static List<ProviderDtoResponse> modelListToDtoResponseList(List<Provider> modelList) {
+        List<ProviderDtoResponse> dtoList = new ArrayList<>();
+        for (Provider model : modelList) {
+            dtoList.add(modelToDtoResponse(model));
+        }
+        return dtoList;
     }
 
     public static Provider addDtoToModel(ProviderAddDtoRequest dto) {

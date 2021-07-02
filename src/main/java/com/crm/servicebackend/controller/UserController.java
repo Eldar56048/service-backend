@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Map;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -56,8 +55,11 @@ public class UserController {
 
     @GetMapping("/roles/all")
     public ResponseEntity<?> getAllRoles(){
-        Set<Role> roles = Set.of(Role.values());
-        roles.remove(Role.OWNER);
+        Role[] roles = (Role.values());
+        /*List<Role> roleList = Arrays.asList(roles);
+        if (roleList.contains(Role.OWNER)) {
+            roleList.remove(Role.OWNER);
+        }*/
         return ResponseEntity.ok(roles);
     }
 

@@ -8,8 +8,8 @@ import java.util.Date;
 @Data
 public class OrderForListDtoResponse {
     private Long id;
-    private String name;
-    private String number;
+    private String clientName;
+    private String phoneNumber;
     private Status status;
     private String model;
     private String type;

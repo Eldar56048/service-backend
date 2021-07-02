@@ -18,6 +18,6 @@ public class ServiceAddDtoRequest {
     @Max(value = 100, message = "Значение поле должно быть меньше 100")
     private int percentage;
     @NotNull(message = "Поле цена обязательно.")
-    @PositiveOrZero(message = "Значение поле должно быть положительным")
+    @Positive(message = "Значение поле должно быть положительным")
     private int price;
 }

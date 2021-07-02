@@ -30,7 +30,7 @@ public class TypeController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> getAll(
             @AuthenticationPrincipal User user,
             @RequestParam(defaultValue = "1") int page,
@@ -48,6 +48,17 @@ public class TypeController {
         else
             response = service.getAllAndFilter(serviceCenterId,page-1, size, sortBy, orderBy, title);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/select")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<?> getAllForSelect(
+            @AuthenticationPrincipal User user
+    ) {
+        Long serviceCenterId = user.getServiceCenter().getId();
+        if(!serviceCenterService.existsById(serviceCenterId))
+            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+        return ResponseEntity.ok(service.getAllForSelect(serviceCenterId));
     }
 
     @PutMapping

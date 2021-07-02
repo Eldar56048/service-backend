@@ -39,6 +39,9 @@ public class LoginController {
     @PostMapping
     public ResponseEntity<?> generateToken(@RequestBody LoginDtoRequest loginUser) throws AuthenticationException {
         User user = (User) userService.loadUserByUsername(loginUser.getUsername());
+        if (user.getServiceCenter().isEnabled()==false){
+            throw new AuthException("Ваш сервисный центр не активен", "service-center/not-active");
+        }
         Authentication authentication = null;
         try {
             authentication = authenticationManager.authenticate(

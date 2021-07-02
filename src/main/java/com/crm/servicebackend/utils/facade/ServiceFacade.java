@@ -22,11 +22,12 @@ public class ServiceFacade {
         return dto;
     }
 
-    public static Service addDtoToModel(ServiceAddDtoRequest dto) {
+    public static Service addDtoToModel(ServiceAddDtoRequest dto, User user) {
         Service model = new Service();
         model.setName(dto.getName());
         model.setDescription(dto.getDescription());
-        model.setPercentage(dto.getPercentage());
+        if (user.getRoles().contains(Role.ADMIN))
+            model.setPercentage(dto.getPercentage());
         model.setPrice(dto.getPrice());
         return model;
     }

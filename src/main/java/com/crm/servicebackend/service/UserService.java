@@ -51,6 +51,14 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
+    public User getByUsername(String username) {
+        User user = repository.findByUsername(username);
+        if(user == null){
+            throw new AuthException("Неправильное имя пользователя или пароль", "auth/invalid-username-or-password");
+        }
+        return user;
+    }
+
 
     public UserDtoResponse add(Long serviceCenterId, UserAddDtoRequest dto, User user) {
         if (existsByUsername(dto.getUsername()))

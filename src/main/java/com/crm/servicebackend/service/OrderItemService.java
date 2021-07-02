@@ -26,6 +26,10 @@ public class OrderItemService {
         return repository.getAllByServiceAndServiceCenterId(service, serviceCenterId);
     }
 
+    public Boolean existsByIdAndServiceCenterIdAndOrderId(Long id, Long serviceCenterId, Long orderId) {
+        return repository.existsByIdAndServiceCenterIdAndOrderId(id, serviceCenterId, orderId);
+    }
+
     public OrderItem save(OrderItem orderItem) {
         return repository.save(orderItem);
     }

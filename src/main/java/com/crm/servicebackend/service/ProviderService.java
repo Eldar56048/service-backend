@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -62,6 +63,10 @@ public class ProviderService {
         return modelToDtoResponse(save(provider));
     }
 
+    public List<ProviderDtoResponse> getAllForSelect(Long serviceCenterId) {
+        return modelListToDtoResponseList(repository.getAllByServiceCenterId(serviceCenterId));
+    }
+
     public Provider get(Long providerId, Long serviceCenterId) {
         return repository.findByIdAndServiceCenterId(providerId, serviceCenterId);
     }
@@ -77,6 +82,10 @@ public class ProviderService {
 
     public Provider updateDtoToModel(Provider model, ProviderUpdateDtoRequest dto) {
         return ProviderFacade.updateDtoToModel(model, dto);
+    }
+
+    public List<ProviderDtoResponse> modelListToDtoResponseList(List<Provider> modelList) {
+        return ProviderFacade.modelListToDtoResponseList(modelList);
     }
 
     public Provider addDtoToModel(ProviderAddDtoRequest dto) {
