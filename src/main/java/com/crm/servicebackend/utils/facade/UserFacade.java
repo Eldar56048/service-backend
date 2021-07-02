@@ -76,6 +76,8 @@ public class UserFacade {
             dto.setName(model.getName());
         if (model.getSurname() != null)
             dto.setSurname(model.getSurname());
+        if (model.getPhoneNumber() != null)
+            dto.setPhoneNumber(model.getPhoneNumber());
         return dto;
     }
 }
