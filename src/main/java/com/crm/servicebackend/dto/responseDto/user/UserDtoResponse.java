@@ -15,6 +15,5 @@ public class UserDtoResponse {
     private Set<Role> roles;
     private String phoneNumber;
     private ExperienceModelDtoResponse experienceModel;
-    private Long serviceCenterId;
-
+    private boolean enabled;
 }

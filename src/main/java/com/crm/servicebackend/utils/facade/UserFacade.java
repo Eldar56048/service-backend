@@ -22,10 +22,9 @@ public class UserFacade {
             dto.setPhoneNumber(model.getPhoneNumber());
         if (model.getRoles() != null)
             dto.setRoles(model.getRoles());
-        if (model.getServiceCenter() != null)
-            dto.setServiceCenterId(model.getServiceCenter().getId());
         if (model.getExperienceModel() != null)
             dto.setExperienceModel(ExperienceModelFacade.modelToDtoResponse(model.getExperienceModel()));
+        dto.setEnabled(model.isEnabled());
         return dto;
     }
 

@@ -16,6 +16,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -56,11 +58,12 @@ public class UserController {
     @GetMapping("/roles/all")
     public ResponseEntity<?> getAllRoles(){
         Role[] roles = (Role.values());
-        /*List<Role> roleList = Arrays.asList(roles);
-        if (roleList.contains(Role.OWNER)) {
-            roleList.remove(Role.OWNER);
-        }*/
-        return ResponseEntity.ok(roles);
+        List<Role> roleList = new ArrayList<>();
+        for(Role role: roles){
+            if (!role.equals(Role.OWNER))
+                roleList.add(role);
+        }
+        return ResponseEntity.ok(roleList);
     }
 
     @PutMapping

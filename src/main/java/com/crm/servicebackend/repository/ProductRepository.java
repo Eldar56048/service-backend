@@ -45,7 +45,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             " GROUP BY meses.month\n")
     List<MonthlySale> getMonthlySold(long id, long serviceCenterId);
 
-    @Query(nativeQuery = true, value = "select p.id, p.name as product, sum(itm.quantity) as count from orders o" +
+    @Query(nativeQuery = true, value = "select p.id, p.name as name, sum(itm.quantity) as count from orders o" +
             " INNER JOIN orders_items ordItm on ordItm.order_id = o.id" +
             " inner JOIN order_items itm on itm.id = ordItm.items_id" +
             " Inner Join products p on itm.product_id = p.id" +
@@ -63,7 +63,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     )
     public SoldItemCount getSoldProductCount(Long serviceCenterId);
 
-    @Query(nativeQuery = true, value = "select p.id, p.name as name, sum(if(itm.product_id, (itm.quantity*(itm.sold_price-itm.last_price)), ((itm.quantity)*((itm.sold_price*(if(o.discount_percent>0, (100-o.discount_percent)/100, 1)) - ((itm.sold_price*((if(o.discount_percent>0, (100-o.discount_percent)/100,1)) * (itm.service_percentage)/100 * (ex.coefficient)/100 ))))) ))) as profit from orders o INNER JOIN orders_items ordItm on ordItm.order_id = o.id inner JOIN order_items itm on itm.id = ordItm.items_id inner JOIN experience_models ex on ex.id = COALESCE(itm.user_experience_id, 103) INNER JOIN products p on p.id = itm.product_id WHERE o.status = 2 and o.service_center_id= ?1 GROUP BY p.id Order by profit desc LIMIT ?2")
+    @Query(nativeQuery = true, value = "select p.id, p.name as name, sum(itm.quantity*(itm.sold_price-itm.last_price)) as profit from orders o INNER JOIN orders_items ordItm on ordItm.order_id = o.id inner JOIN order_items itm on itm.id = ordItm.items_id INNER JOIN products p on p.id = itm.product_id WHERE o.status = 2 and o.service_center_id=?1 group by p.id Order by profit desc LIMIT ?2")
     public List<TopProfitItem> getTopProfitProducts(Long serviceCenterId, Long limit);
 
     @Query(nativeQuery = true, value = "SELECT COALESCE(sum(o.quantity),0) as soldCount from order_items o where o.product_id = ?1 and o.service_center_id = ?2")

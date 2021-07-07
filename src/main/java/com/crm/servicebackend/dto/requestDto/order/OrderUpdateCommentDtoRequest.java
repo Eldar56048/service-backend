@@ -1,4 +1,4 @@
-package com.crm.servicebackend.dto.responseDto.order;
+package com.crm.servicebackend.dto.requestDto.order;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;

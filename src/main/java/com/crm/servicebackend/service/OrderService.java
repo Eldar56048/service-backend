@@ -1,9 +1,14 @@
 package com.crm.servicebackend.service;
 
 import com.crm.servicebackend.dto.requestDto.order.OrderAddDtoRequest;
-import com.crm.servicebackend.dto.responseDto.order.*;
+import com.crm.servicebackend.dto.requestDto.order.OrderAddProductDtoRequest;
+import com.crm.servicebackend.dto.requestDto.order.OrderAddServiceDtoRequest;
+import com.crm.servicebackend.dto.requestDto.order.OrderUpdateCommentDtoRequest;
+import com.crm.servicebackend.dto.responseDto.order.OrderDtoResponse;
+import com.crm.servicebackend.dto.responseDto.order.OrderForListDtoResponse;
 import com.crm.servicebackend.dto.responseDto.orderItem.OrderItemOrderDtoResponse;
 import com.crm.servicebackend.dto.responseDto.statistics.Count;
+import com.crm.servicebackend.dto.responseDto.statistics.NetProfit;
 import com.crm.servicebackend.exception.domain.DtoException;
 import com.crm.servicebackend.model.*;
 import com.crm.servicebackend.repository.OrderRepository;
@@ -76,6 +81,24 @@ public class OrderService {
         else
             pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
         return PaginationResponseFacade.response(pageToDtoPage(repository.findAllByServiceCenterIdAndClientId(serviceCenterId,clientId, pageable)));
+    }
+
+    public Map<String, Object> getAllByStatus(Long serviceCenterId, Status status, int page, int size, String sortBy, String orderBy){
+        Pageable pageable;
+        if (orderBy.equals("asc"))
+            pageable = PageRequest.of(page, size, Sort.by(sortBy).ascending());
+        else
+            pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
+        return PaginationResponseFacade.response(pageToDtoPage(repository.findAllByServiceCenterIdAndStatus(serviceCenterId,status, pageable)));
+    }
+
+    public Map<String, Object> getAllByStatusAndFilter(Long serviceCenterId, Status status, int page, int size, String sortBy, String orderBy, String title){
+        Pageable pageable;
+        if (orderBy.equals("asc"))
+            pageable = PageRequest.of(page, size, Sort.by(sortBy).ascending());
+        else
+            pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
+        return PaginationResponseFacade.response(pageToDtoPage(repository.findAllByServiceCenterIdAndStatusAndFilter(serviceCenterId, status, title, pageable)));
     }
 
     public Map<String, Object> getAllByClientAndFilter(Long serviceCenterId, Long clientId, int page, int size, String sortBy, String orderBy, String title){
@@ -238,7 +261,13 @@ public class OrderService {
                 "Тел: " + order.getDoneUser().getPhoneNumber() + "\n" +
                 "Цена: " + order.getPrice() + "\n" +
                 "С уважением команда "+order.getServiceCenter().getName();
-        boolean send = smsc.send_sms(order.getPhoneNumber(), message, 1, "", "", 0, "", "");
+        String phoneNumber = "";
+        if (order.getPhoneNumber() != null) {
+            phoneNumber = order.getPhoneNumber();
+        } else {
+            phoneNumber = order.getClient().getPhoneNumber();
+        }
+        boolean send = smsc.send_sms(phoneNumber, message, 1, "", "", 0, "", "");
         if (send == false) {
             throw new DtoException("Клиент не уведомлен", "order/not-notified");
         }
@@ -301,6 +330,10 @@ public class OrderService {
             }
         }
     }*/
+
+    public NetProfit getProfit(Long serviceCenterId) {
+        return repository.getProfit(serviceCenterId);
+    }
 
     public OrderDtoResponse setPaymentType(Long orderId, Long serviceCenterId,String type){
         Order order = get(orderId, serviceCenterId);

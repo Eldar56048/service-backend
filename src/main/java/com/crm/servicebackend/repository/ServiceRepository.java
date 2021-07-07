@@ -43,7 +43,7 @@ public interface ServiceRepository extends JpaRepository<Service, Long> {
             " GROUP BY meses.month\n")
     List<MonthlySale> getMonthlySold(long serviceId, long serviceCenterId);
 
-    @Query(nativeQuery = true, value = "select s.id, s.name as service, sum(itm.quantity) as count from orders o" +
+    @Query(nativeQuery = true, value = "select s.id, s.name as name, sum(itm.quantity) as count from orders o" +
             " INNER JOIN orders_items ordItm on ordItm.order_id = o.id" +
             " inner JOIN order_items itm on itm.id = ordItm.items_id" +
             " Inner Join services s on itm.service_id = s.id" +

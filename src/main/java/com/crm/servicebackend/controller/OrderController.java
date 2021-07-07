@@ -1,11 +1,12 @@
 package com.crm.servicebackend.controller;
 
 import com.crm.servicebackend.dto.requestDto.order.OrderAddDtoRequest;
-import com.crm.servicebackend.dto.responseDto.order.OrderAddProductDtoRequest;
-import com.crm.servicebackend.dto.responseDto.order.OrderAddServiceDtoRequest;
-import com.crm.servicebackend.dto.responseDto.order.OrderUpdateCommentDtoRequest;
+import com.crm.servicebackend.dto.requestDto.order.OrderAddProductDtoRequest;
+import com.crm.servicebackend.dto.requestDto.order.OrderAddServiceDtoRequest;
+import com.crm.servicebackend.dto.requestDto.order.OrderUpdateCommentDtoRequest;
 import com.crm.servicebackend.exception.domain.ResourceNotFoundException;
 import com.crm.servicebackend.model.Order;
+import com.crm.servicebackend.model.Status;
 import com.crm.servicebackend.model.User;
 import com.crm.servicebackend.service.*;
 import com.crm.servicebackend.utils.facade.OrderFacade;
@@ -60,6 +61,28 @@ public class OrderController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/status")
+    public ResponseEntity<?> getAllByStatus(
+            @AuthenticationPrincipal User user,
+            @RequestParam Status status,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "1") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "desc") String orderBy,
+            @RequestParam(defaultValue = "") String title
+    ) {
+        Map<String, Object> response;
+        Long serviceCenterId = user.getServiceCenter().getId();
+        if(!serviceCenterService.existsById(serviceCenterId))
+            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+        if (title.length()<=0)
+            response = service.getAllByStatus(serviceCenterId, status, page-1, size, sortBy, orderBy);
+        else
+            response = service.getAllByStatusAndFilter(serviceCenterId, status,page-1, size, sortBy, orderBy, title);
+        return ResponseEntity.ok(response);
+    }
+
+
     @PutMapping
     public ResponseEntity<?> add(@AuthenticationPrincipal User user, @Valid @RequestBody OrderAddDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
@@ -74,6 +97,16 @@ public class OrderController {
         return ResponseEntity.ok(service.add(serviceCenterId, user, dto));
     }
 
+    @GetMapping("/net-profit")
+    public ResponseEntity<?> getProfit(
+            @AuthenticationPrincipal User user
+    ) {
+        Long serviceCenterId = user.getServiceCenter().getId();
+        if(!serviceCenterService.existsById(serviceCenterId))
+            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+        return ResponseEntity.ok(service.getProfit(serviceCenterId));
+    }
+
     @GetMapping("/{orderId}")
     public ResponseEntity<?> getOrder(
             @AuthenticationPrincipal User user,
@@ -83,7 +116,7 @@ public class OrderController {
         if(!serviceCenterService.existsById(serviceCenterId))
             throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
         if(!service.existsByIdAndServiceCenterId(orderId, serviceCenterId))
-            throw new ResourceNotFoundException("Заказ с идентификатором № "+serviceCenterId+" не найдено", "order/not-found");
+            throw new ResourceNotFoundException("Заказ с идентификатором № "+orderId+" не найдено", "order/not-found");
         return ResponseEntity.ok(OrderFacade.modelToOrderDtoResponse(service.get(orderId, serviceCenterId)));
     }
 
@@ -106,7 +139,7 @@ public class OrderController {
     }
 
     @PostMapping("/{orderId}/add/product")
-    public ResponseEntity<?> addProductToOrderPost(@AuthenticationPrincipal User user, @PathVariable long orderId, @RequestBody OrderAddProductDtoRequest dto) {
+    public ResponseEntity<?> addProductToOrderPost(@AuthenticationPrincipal User user, @PathVariable long orderId, @Valid @RequestBody OrderAddProductDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
             throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
@@ -118,7 +151,7 @@ public class OrderController {
     }
 
     @PostMapping("/{orderId}/add/service")
-    public ResponseEntity<?> addServiceToOrder(@AuthenticationPrincipal User user, @PathVariable long orderId, @RequestBody OrderAddServiceDtoRequest dto) {
+    public ResponseEntity<?> addServiceToOrder(@AuthenticationPrincipal User user, @PathVariable long orderId,@Valid @RequestBody OrderAddServiceDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
             throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");

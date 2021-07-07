@@ -75,9 +75,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             User user = userDetailsService.getByUsername(username);
-            if (user.getServiceCenter().isEnabled()==false){
-                logger.error("Сервисный центр не активен");
+            if (user.isEnabled() == false) {
+                logger.error("Пользователь не активен");
                 handleUnAuthorizedError(req, res, new AuthException("Ваш сервисный центр не активен", "service-center/not-active-token"));
+            }
+            else if (user.getServiceCenter().isEnabled()==false){
+                logger.error("Сервисный центр не активен");
+                handleUnAuthorizedError(req, res, new AuthException("Ваш аккаунт не активен", "user/not-active"));
             }
             else if (jwtTokenUtil.validateToken(authToken, userDetails)) {
                 UsernamePasswordAuthenticationToken authentication = jwtTokenUtil.getAuthenticationToken(authToken, SecurityContextHolder.getContext().getAuthentication(), userDetails);
@@ -101,7 +105,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         httpResponse.setCharacterEncoding("UTF-8");
         httpResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
         httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-
         try {
             httpResponse.getWriter().println(convertToJSON(error));
         } catch (IOException ex) {

@@ -10,7 +10,7 @@ import java.util.Set;
 @Data
 public class UserUpdateDtoRequest {
     @NotNull(message = "Поле id обязательно")
-    @PositiveOrZero(message = "id не может быть негативным числом")
+    @Positive(message = "id не может быть негативным числом")
     private Long id;
     @NotBlank(message = "Полe Имя обязательно.")
     @Length(message = "Длина Имени должна быть больше нуля", min = 1)
@@ -30,7 +30,7 @@ public class UserUpdateDtoRequest {
     @Pattern(regexp = "[8][0-9]{10}", message = "Номер телефон не соответствует формату")
     private String phoneNumber;
     @NotNull(message = "Поле id обязательно")
-    @PositiveOrZero(message = "id не может быть негативным числом")
+    @Positive(message = "id не может быть негативным числом")
     private Long experienceModelId;
     @NotNull(message = "Поле активен обязательно")
     private Boolean enabled;

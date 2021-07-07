@@ -73,7 +73,6 @@ public class UserService implements UserDetailsService {
             roles.remove(Role.OWNER);
             model.setRoles(roles);
         }
-
         model.setEnabled(true);
         model.setExperienceModel(experienceModelService.get(dto.getExperienceModelId(), serviceCenterId));
         model.setPassword(passwordEncoder.encode(dto.getPassword()));
@@ -100,7 +99,7 @@ public class UserService implements UserDetailsService {
         return PaginationResponseFacade.response(pageToDtoPage(repository.findAndFilter(serviceCenterId, title, pageable)));
     }
 
-    public UserDtoResponse update(Long userId, Long serviceCenterId, UserUpdateDtoRequest dto, User user) {
+    public User update(Long userId, Long serviceCenterId, UserUpdateDtoRequest dto, User user) {
         if (existsByUsernameAndIdNotLike(dto.getUsername(), userId))
             throw new DtoException("Пользователь с таким логином уже существует","user/exists-by-username");
         User model = get(userId, serviceCenterId);
@@ -116,8 +115,9 @@ public class UserService implements UserDetailsService {
         }
         if (model.getExperienceModel().getId() != dto.getExperienceModelId())
             model.setExperienceModel(experienceModelService.get(dto.getExperienceModelId(), serviceCenterId));
-        model.setPassword(passwordEncoder.encode(dto.getPassword()));
-        return modelToDtoResponse(save(model));
+        if (dto.getPassword().length() != 60)
+            model.setPassword(passwordEncoder.encode(dto.getPassword()));
+        return save(model);
     }
 
     public User get(Long userId, Long serviceCenterId) {

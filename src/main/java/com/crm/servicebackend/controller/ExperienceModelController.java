@@ -51,6 +51,14 @@ public class ExperienceModelController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/select")
+    public ResponseEntity<?> getAllForSelect(@AuthenticationPrincipal User user) {
+        Long serviceCenterId = user.getServiceCenter().getId();
+        if(!serviceCenterService.existsById(serviceCenterId))
+            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+        return ResponseEntity.ok(service.getAll(serviceCenterId));
+    }
+
     @PutMapping
     public ResponseEntity<?> add(@AuthenticationPrincipal User user, @Valid @RequestBody ExperienceModelAddDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
