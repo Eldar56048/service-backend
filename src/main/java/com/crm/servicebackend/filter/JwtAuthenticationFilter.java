@@ -127,7 +127,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return new AntPathRequestMatcher("/api/v1/auth").matches(request);
+        return new AntPathRequestMatcher("/api/v1/client/**").matches(request) || new AntPathRequestMatcher("/api/v1/auth").matches(request);
     }
 
 }

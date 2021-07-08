@@ -388,6 +388,10 @@ public class OrderService {
         return repository.findByIdAndServiceCenterId(orderId, serviceCenterId);
     }
 
+    public Order getById(Long orderId)  {
+        return repository.findById(orderId).get();
+    }
+
     public boolean existsByIdAndServiceCenterId(Long orderId, Long serviceCenterId) {
         return repository.existsByIdAndServiceCenterId(orderId, serviceCenterId);
     }
@@ -403,6 +407,10 @@ public class OrderService {
             }
         }
         return false;
+    }
+
+    public boolean existsByIdAndToken(Long id, String token) {
+        return repository.existsByIdAndToken(id, token);
     }
 
     public Order save(Order order) {

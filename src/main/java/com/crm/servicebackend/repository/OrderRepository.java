@@ -30,4 +30,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "       (itm.quantity*(itm.sold_price-itm.last_price)),\n" +
             "       ((itm.quantity)*((itm.sold_price*(if(o.discount_percent>0, (100-o.discount_percent)/100, 1)) - ((itm.sold_price*((if(o.discount_percent>0, (100-o.discount_percent)/100,1)) * (itm.service_percentage)/100 * (ex.coefficient)/100 ))))) ))) as profit from orders o INNER JOIN orders_items ordItm on ordItm.order_id = o.id inner JOIN order_items itm on itm.id = ordItm.items_id inner JOIN experience_models ex on ex.id = COALESCE(itm.user_experience_id, 103) WHERE o.status = 2 and o.service_center_id =?1")
     public NetProfit getProfit(Long serviceCenterId);
+    Boolean existsByIdAndToken(Long id, String token);
 }

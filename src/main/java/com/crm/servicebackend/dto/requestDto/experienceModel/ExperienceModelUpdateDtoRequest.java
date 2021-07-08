@@ -8,12 +8,12 @@ import javax.validation.constraints.*;
 @Data
 public class ExperienceModelUpdateDtoRequest {
     @NotNull(message = "Поле id обязательно")
-    @PositiveOrZero(message = "id не может быть негативным числом")
+    @Positive(message = "id не может быть негативным числом")
     private Long id;
     @NotBlank(message = "Поле название опыта обязательно.")
     @Length(message = "Длина название опыта должна быть больше нуля", min = 1)
     private String name;
-    @Min(value = 1,message = "Значение поле должно быть больше 1")
+    @Min(value = 0,message = "Значение поле должно быть больше нуля")
     @Max(value = 100, message = "Значение поле должно быть меньше 100")
     private int coefficient;
 }
