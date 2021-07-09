@@ -8,6 +8,7 @@ import com.crm.servicebackend.exception.domain.ResourceNotFoundException;
 import com.crm.servicebackend.model.User;
 import com.crm.servicebackend.service.IncomingHistoryService;
 import com.crm.servicebackend.service.ProductService;
+import com.crm.servicebackend.service.ProviderService;
 import com.crm.servicebackend.service.ServiceCenterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,12 +26,14 @@ public class ProductController {
     private final ServiceCenterService serviceCenterService;
     private final ProductService service;
     private final IncomingHistoryService incomingHistoryService;
+    private final ProviderService providerService;
 
     @Autowired
-    public ProductController(ServiceCenterService serviceCenterService, ProductService service, IncomingHistoryService incomingHistoryService) {
+    public ProductController(ServiceCenterService serviceCenterService, ProductService service, IncomingHistoryService incomingHistoryService, ProviderService providerService) {
         this.serviceCenterService = serviceCenterService;
         this.service = service;
         this.incomingHistoryService = incomingHistoryService;
+        this.providerService = providerService;
     }
 
     @GetMapping("/select")
@@ -164,7 +167,7 @@ public class ProductController {
             throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
         if (!service.existsByIdAndServiceCenterId(productId, serviceCenterId))
             throw new ResourceNotFoundException("Товар с идентификатором № "+productId+" не найдено", "product/not-found");
-        if (!service.existsByIdAndServiceCenterId(dto.getProviderId(), serviceCenterId))
+        if (!providerService.existsByIdAndServiceCenterId(dto.getProviderId(), serviceCenterId))
             throw new ResourceNotFoundException("Поставщик с идентификатором № "+ dto.getProviderId()+" не найдено", "provider/not-found");
         return ResponseEntity.ok(service.addProductStorage(productId, serviceCenterId,dto));
     }

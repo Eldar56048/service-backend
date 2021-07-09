@@ -66,6 +66,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query(nativeQuery = true, value = "select p.id, p.name as name, sum(itm.quantity*(itm.sold_price-itm.last_price)) as profit from orders o INNER JOIN orders_items ordItm on ordItm.order_id = o.id inner JOIN order_items itm on itm.id = ordItm.items_id INNER JOIN products p on p.id = itm.product_id WHERE o.status = 2 and o.service_center_id=?1 group by p.id Order by profit desc LIMIT ?2")
     public List<TopProfitItem> getTopProfitProducts(Long serviceCenterId, Long limit);
 
-    @Query(nativeQuery = true, value = "SELECT COALESCE(sum(o.quantity),0) as soldCount from order_items o where o.product_id = ?1 and o.service_center_id = ?2 and o.status = 2")
+    @Query(nativeQuery = true, value = "SELECT COALESCE(sum(o.quantity),0) as soldCount from order_items o where o.product_id = ?1 and o.service_center_id = ?2")
     Sold getProductSoldCount(long productId, long serviceCenterId);
 }
