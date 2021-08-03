@@ -1,7 +1,6 @@
 package com.crm.servicebackend.utils.token;
 
 import io.jsonwebtoken.*;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,17 +15,11 @@ import java.util.Date;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.crm.servicebackend.constant.SecurityConstant.*;
+
 @Component
 public class TokenProvider implements Serializable {
 
-    @Value("${jwt.token.validity}")
-    public long TOKEN_VALIDITY;
-
-    @Value("${jwt.signing.key}")
-    public String SIGNING_KEY;
-
-    @Value("${jwt.authorities.key}")
-    public String AUTHORITIES_KEY;
 
     public String getUsernameFromToken(String token){
         return getClaimFromToken(token, Claims::getSubject);

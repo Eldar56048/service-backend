@@ -18,6 +18,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
+import static com.crm.servicebackend.constant.response.type.TypeResponseCode.TYPE_EXISTS_BY_NAME_CODE;
+import static com.crm.servicebackend.constant.response.type.TypeResponseMessage.TYPE_EXISTS_BY_NAME_MESSAGE;
+
 @Service
 public class TypeService {
     private final TypeRepository repository;
@@ -31,7 +34,7 @@ public class TypeService {
 
     public TypeDtoResponse add(Long serviceCenterId, TypeAddDtoRequest dto) {
         if (existsByNameAndServiceCenterId(dto.getName(), serviceCenterId))
-            throw new DtoException("Тип устройства с таким названием уже существует","type/exists-by-name");
+            throw new DtoException(TYPE_EXISTS_BY_NAME_MESSAGE, TYPE_EXISTS_BY_NAME_CODE);
         Type type = addDtoToModel(dto);
         type.setServiceCenter(serviceCenterService.get(serviceCenterId));
         return modelToDtoResponse(save(type));
@@ -61,7 +64,7 @@ public class TypeService {
 
     public TypeDtoResponse update(Long typeId, Long serviceCenterId, TypeUpdateDtoRequest dto) {
         if (existsByNameAndIdNotLikeAndServiceCenterId(dto.getName(), typeId, serviceCenterId))
-            throw new DtoException("Тип устройства с таким названием уже существует","type/exists-by-name");
+            throw new DtoException(TYPE_EXISTS_BY_NAME_MESSAGE, TYPE_EXISTS_BY_NAME_CODE);
         Type type = get(typeId, serviceCenterId);
         type = updateDtoToModel(type, dto);
         return modelToDtoResponse(save(type));

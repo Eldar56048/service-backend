@@ -17,6 +17,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Map;
 
+import static com.crm.servicebackend.constant.response.experienceModel.ExperienceModelResponseCode.*;
+import static com.crm.servicebackend.constant.response.experienceModel.ExperienceModelResponseMessage.EXPERIENCE_MODEL_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.response.experienceModel.ExperienceModelResponseMessage.EXPERIENCE_MODEL_TWO_ANOTHER_ID_MESSAGE;
+import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseCode.SERVICE_CENTER_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseMessage.SERVICE_CENTER_NOT_FOUND_MESSAGE;
+
 @RestController
 @RequestMapping("/api/v1/experience-models")
 @PreAuthorize("hasAuthority('ADMIN')")
@@ -43,7 +49,7 @@ public class ExperienceModelController {
         Map<String, Object> response;
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (title.length()<=0)
             response = service.getAll(serviceCenterId,page-1, size, sortBy, orderBy);
         else
@@ -55,7 +61,7 @@ public class ExperienceModelController {
     public ResponseEntity<?> getAllForSelect(@AuthenticationPrincipal User user) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.getAll(serviceCenterId));
     }
 
@@ -63,7 +69,7 @@ public class ExperienceModelController {
     public ResponseEntity<?> add(@AuthenticationPrincipal User user, @Valid @RequestBody ExperienceModelAddDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.add(serviceCenterId, dto));
     }
 
@@ -71,9 +77,9 @@ public class ExperienceModelController {
     public ResponseEntity<?> get(@AuthenticationPrincipal User user, @PathVariable Long experienceId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(experienceId, serviceCenterId))
-            throw new ResourceNotFoundException("Опыт с идентификатором № "+experienceId+" не найдено", "experience-model/not-found");
+            throw new ResourceNotFoundException(EXPERIENCE_MODEL_NOT_FOUND_MESSAGE(experienceId), EXPERIENCE_MODEL_NOT_FOUND_CODE);
         return ResponseEntity.ok(ExperienceModelFacade.modelToDtoResponse(service.get(experienceId, serviceCenterId)));
     }
 
@@ -81,11 +87,11 @@ public class ExperienceModelController {
     public ResponseEntity<?> update(@AuthenticationPrincipal User user, @PathVariable Long experienceId, @Valid @RequestBody ExperienceModelUpdateDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if (!dto.getId().equals(experienceId))
-            throw new DtoException("Два разных id", "experience-model/two-another-id");
+            throw new DtoException(EXPERIENCE_MODEL_TWO_ANOTHER_ID_MESSAGE, EXPERIENCE_MODEL_TWO_ANOTHER_ID_CODE);
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(experienceId, serviceCenterId))
-            throw new ResourceNotFoundException("Опыт с идентификатором № "+experienceId+" не найдено", "experience-model/not-found");
+            throw new ResourceNotFoundException(EXPERIENCE_MODEL_NOT_FOUND_MESSAGE(experienceId), EXPERIENCE_MODEL_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.update(experienceId, serviceCenterId, dto));
     }
 
@@ -93,10 +99,10 @@ public class ExperienceModelController {
     public ResponseEntity<?> delete(@AuthenticationPrincipal User user,@PathVariable Long experienceId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(experienceId, serviceCenterId))
-            throw new ResourceNotFoundException("Опыт с идентификатором № "+experienceId+" не найдено", "experience-model/not-found");
+            throw new ResourceNotFoundException(EXPERIENCE_MODEL_NOT_FOUND_MESSAGE(experienceId), EXPERIENCE_MODEL_NOT_FOUND_CODE);
         service.delete(experienceId);
-        return ResponseEntity.ok("experience-model/deleted");
+        return ResponseEntity.ok(EXPERIENCE_MODEL_DELETED_CODE);
     }
 }

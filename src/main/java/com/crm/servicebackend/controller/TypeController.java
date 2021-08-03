@@ -17,6 +17,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Map;
 
+import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseCode.SERVICE_CENTER_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseMessage.SERVICE_CENTER_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.response.type.TypeResponseCode.*;
+import static com.crm.servicebackend.constant.response.type.TypeResponseMessage.TYPE_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.response.type.TypeResponseMessage.TYPE_TWO_ANOTHER_ID_MESSAGE;
+
 @RestController
 @RequestMapping("/api/v1/types")
 public class TypeController {
@@ -42,7 +48,7 @@ public class TypeController {
         Map<String, Object> response;
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (title.length()<=0)
             response = service.getAll(serviceCenterId,page-1, size, sortBy, orderBy);
         else
@@ -57,7 +63,7 @@ public class TypeController {
     ) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.getAllForSelect(serviceCenterId));
     }
 
@@ -66,7 +72,7 @@ public class TypeController {
     public ResponseEntity<?> add(@AuthenticationPrincipal User user, @Valid @RequestBody TypeAddDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.add(serviceCenterId, dto));
     }
 
@@ -75,9 +81,9 @@ public class TypeController {
     public ResponseEntity<?> get(@AuthenticationPrincipal User user, @PathVariable Long typeId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(typeId, serviceCenterId))
-            throw new ResourceNotFoundException("Тип устройства с идентификатором № "+typeId+" не найдено", "type/not-found");
+            throw new ResourceNotFoundException(TYPE_NOT_FOUND_MESSAGE(typeId), TYPE_NOT_FOUND_CODE);
         return ResponseEntity.ok(TypeFacade.modelToDtoResponse(service.get(typeId, serviceCenterId)));
     }
 
@@ -86,11 +92,11 @@ public class TypeController {
     public ResponseEntity<?> update(@AuthenticationPrincipal User user, @PathVariable Long typeId, @Valid @RequestBody TypeUpdateDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if (dto.getId()!=typeId)
-            throw new DtoException("Два разных id", "type/two-another-id");
+            throw new DtoException(TYPE_TWO_ANOTHER_ID_MESSAGE, TYPE_TWO_ANOTHER_ID_CODE);
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(typeId, serviceCenterId))
-            throw new ResourceNotFoundException("Тип устройства с идентификатором № "+typeId+" не найдено", "type/not-found");
+            throw new ResourceNotFoundException(TYPE_NOT_FOUND_MESSAGE(typeId), TYPE_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.update(typeId, serviceCenterId, dto));
     }
 
@@ -99,11 +105,11 @@ public class TypeController {
     public ResponseEntity<?> delete(@AuthenticationPrincipal User user,@PathVariable Long typeId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(typeId, serviceCenterId))
-            throw new ResourceNotFoundException("Тип устройства с идентификатором № "+typeId+" не найдено", "type/not-found");
+            throw new ResourceNotFoundException(TYPE_NOT_FOUND_MESSAGE(typeId), TYPE_NOT_FOUND_CODE);
         service.delete(typeId);
-        return ResponseEntity.ok("type/deleted");
+        return ResponseEntity.ok(TYPE_DELETED_CODE);
     }
 
 }

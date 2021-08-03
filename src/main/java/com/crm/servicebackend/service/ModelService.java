@@ -18,6 +18,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
+import static com.crm.servicebackend.constant.response.model.ModelResponseCode.MODEL_EXISTS_BY_NAME_CODE;
+import static com.crm.servicebackend.constant.response.model.ModelResponseMessage.MODEL_EXISTS_BY_NAME_MESSAGE;
+
 @Service
 public class ModelService {
 
@@ -32,7 +35,7 @@ public class ModelService {
 
     public ModelDtoResponse add(Long serviceCenterId, ModelAddDtoRequest dto) {
         if (existsByNameAndServiceCenterId(dto.getName(), serviceCenterId))
-            throw new DtoException("Модель с таким названием уже существует","model/exists-by-name");
+            throw new DtoException(MODEL_EXISTS_BY_NAME_MESSAGE, MODEL_EXISTS_BY_NAME_CODE);
         Model model = addDtoToModel(dto);
         model.setServiceCenter(serviceCenterService.get(serviceCenterId));
         return modelToDtoResponse(save(model));
@@ -62,7 +65,7 @@ public class ModelService {
 
     public ModelDtoResponse update(Long modelId, Long serviceCenterId, ModelUpdateDtoRequest dto) {
         if (existsByNameAndIdNotLikeAndServiceCenterId(dto.getName(), modelId, serviceCenterId))
-            throw new DtoException("Модель с таким названием уже существует","model/exists-by-name");
+            throw new DtoException(MODEL_EXISTS_BY_NAME_MESSAGE, MODEL_EXISTS_BY_NAME_CODE);
         Model model = get(modelId, serviceCenterId);
         model = updateDtoToModel(model, dto);
         return modelToDtoResponse(save(model));

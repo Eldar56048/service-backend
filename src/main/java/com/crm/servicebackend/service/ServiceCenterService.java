@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
+import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseCode.SERVICE_CENTER_EXISTS_BY_NAME_CODE;
+import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseMessage.SERVICE_CENTER_EXISTS_BY_NAME_MESSAGE;
+
 @Service
 public class ServiceCenterService {
 
@@ -29,7 +32,7 @@ public class ServiceCenterService {
 
     public ServiceCenterDtoResponse add(ServiceCenterAddDtoRequest dto) {
         if (existsByName(dto.getName()))
-            throw new DtoException("Сервисный центр с таким названием уже существует","service-center/exists-by-name");
+            throw new DtoException(SERVICE_CENTER_EXISTS_BY_NAME_MESSAGE, SERVICE_CENTER_EXISTS_BY_NAME_CODE);
         ServiceCenter serviceCenter = ServiceCenterFacade.addDtoToModel(dto);
         return modelToDtoResponse(save(serviceCenter));
     }
@@ -55,7 +58,7 @@ public class ServiceCenterService {
     public ServiceCenterDtoResponse update(Long id, ServiceCenterUpdateDtoRequest dto) {
         ServiceCenter serviceCenter = get(id);
         if (existsByNameAndIdNotLike(dto.getName(), id))
-            throw new DtoException("Сервисный центр с таким названием уже существует","service-center/exists-by-name");
+            throw new DtoException(SERVICE_CENTER_EXISTS_BY_NAME_MESSAGE, SERVICE_CENTER_EXISTS_BY_NAME_CODE);
         serviceCenter = ServiceCenterFacade.updateDtoToModel(serviceCenter, dto);
         return modelToDtoResponse(save(serviceCenter));
     }

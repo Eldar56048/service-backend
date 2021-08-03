@@ -10,7 +10,6 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,14 +28,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
 
+import static com.crm.servicebackend.constant.SecurityConstant.TOKEN_HEADER;
+import static com.crm.servicebackend.constant.SecurityConstant.TOKEN_PREFIX;
+import static com.crm.servicebackend.constant.response.auth.AuthResponseCode.*;
+import static com.crm.servicebackend.constant.response.auth.AuthResponseCodeMessage.*;
+
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
-    @Value("${jwt.header.string}")
-    public String HEADER_STRING;
-
-    @Value("${jwt.token.prefix}")
-    public String TOKEN_PREFIX;
 
     @Resource(name = "userService")
     private UserService userDetailsService;
@@ -46,7 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
-        String header = req.getHeader(HEADER_STRING);
+        String header = req.getHeader(TOKEN_HEADER);
         String username = null;
         String authToken = null;
         System.out.println(header);
@@ -56,32 +54,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 username = jwtTokenUtil.getUsernameFromToken(authToken);
             }   catch (ExpiredJwtException e) {
-                logger.error("Срок действия токена истек");
-                handleUnAuthorizedError(req, res, new AuthException("Срок действия токена истек", "auth/token-expired"));
+                logger.error(TOKEN_EXPIRED_MESSAGE);
+                handleUnAuthorizedError(req, res, new AuthException(TOKEN_EXPIRED_MESSAGE, TOKEN_EXPIRED_CODE));
             }   catch (IllegalArgumentException e) {
-                logger.error("Произошла ошибка при получении имени пользователя из токена");
-                handleUnAuthorizedError(req, res, new AuthException("Произошла ошибка при получении имени пользователя из токена", "fetch-user/error-token"));
+                logger.error(FETCH_USERNAME_FROM_TOKEN_ERROR_MESSAGE);
+                handleUnAuthorizedError(req, res, new AuthException(FETCH_USERNAME_FROM_TOKEN_ERROR_MESSAGE, FETCH_USERNAME_FROM_TOKEN_ERROR_CODE));
             }  catch(SignatureException e){
-                logger.error("Ошибка аутентификации. Имя пользователя или пароль недействительны");
-                handleUnAuthorizedError(req, res, new AuthException("Ошибка аутентификации. Имя пользователя или пароль недействительны", "auth/invalid-username-and-password"));
+                logger.error(INVALID_USERNAME_OR_PASSWORD_MESSAGE);
+                handleUnAuthorizedError(req, res, new AuthException(INVALID_USERNAME_OR_PASSWORD_MESSAGE, INVALID_USERNAME_OR_PASSWORD_CODE));
             }  catch (MalformedJwtException e) {
-                logger.error("Неверный формат пользовательского токена");
-                handleUnAuthorizedError(req, res, new AuthException("Неверный формат пользовательского токена", "auth/invalid-token"));
+                logger.error(INVALID_TOKEN_MESSAGE);
+                handleUnAuthorizedError(req, res, new AuthException(INVALID_TOKEN_MESSAGE, INVALID_TOKEN_CODE));
             }
         } else {
-            logger.error("Не удалось найти токен");
-            handleUnAuthorizedError(req, res, new AuthException("Не удалось найти токен", "auth/not-token"));
+            logger.error(NO_TOKEN_MESSAGE);
+            handleUnAuthorizedError(req, res, new AuthException(NO_TOKEN_MESSAGE, NO_TOKEN_CODE));
         }
+
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             User user = userDetailsService.getByUsername(username);
             if (user.isEnabled() == false) {
-                logger.error("Пользователь не активен");
-                handleUnAuthorizedError(req, res, new AuthException("Ваш сервисный центр не активен", "service-center/not-active-token"));
+                logger.error(SERVICE_CENTER_NOT_ACTIVE_MESSAGE);
+                handleUnAuthorizedError(req, res, new AuthException(SERVICE_CENTER_NOT_ACTIVE_MESSAGE, SERVICE_CENTER_NOT_ACTIVE_CODE));
             }
             else if (user.getServiceCenter().isEnabled()==false){
-                logger.error("Сервисный центр не активен");
-                handleUnAuthorizedError(req, res, new AuthException("Ваш аккаунт не активен", "user/not-active"));
+                logger.error(ACCOUNT_NOT_ACTIVE_MESSAGE);
+                handleUnAuthorizedError(req, res, new AuthException(ACCOUNT_NOT_ACTIVE_MESSAGE, ACCOUNT_NOT_ACTIVE_CODE));
             }
             else if (jwtTokenUtil.validateToken(authToken, userDetails)) {
                 UsernamePasswordAuthenticationToken authentication = jwtTokenUtil.getAuthenticationToken(authToken, SecurityContextHolder.getContext().getAuthentication(), userDetails);
@@ -100,7 +99,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if(e!=null)
             error = new ErrorDetails(HttpStatus.UNAUTHORIZED.value(), new Date(), e.getMessage(), request.getRequestURI(), e.getCode());
         else
-            error = new ErrorDetails(HttpStatus.UNAUTHORIZED.value(), new Date(), "Smth went wrong", request.getRequestURI(), "auth/smth-went-wrong");
+            error = new ErrorDetails(HttpStatus.UNAUTHORIZED.value(), new Date(), SOMETHING_WENT_WRONG_MESSAGE, request.getRequestURI(), SOMETHING_WENT_WRONG_CODE);
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         httpResponse.setCharacterEncoding("UTF-8");
         httpResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);

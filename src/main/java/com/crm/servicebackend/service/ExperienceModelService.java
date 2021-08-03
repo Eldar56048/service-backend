@@ -18,6 +18,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
+import static com.crm.servicebackend.constant.response.experienceModel.ExperienceModelResponseCode.EXPERIENCE_MODEL_EXISTS_BY_COEFFICIENT_CODE;
+import static com.crm.servicebackend.constant.response.experienceModel.ExperienceModelResponseCode.EXPERIENCE_MODEL_EXISTS_BY_NAME_CODE;
+import static com.crm.servicebackend.constant.response.experienceModel.ExperienceModelResponseMessage.EXPERIENCE_MODEL_EXISTS_BY_COEFFICIENT_MESSAGE;
+import static com.crm.servicebackend.constant.response.experienceModel.ExperienceModelResponseMessage.EXPERIENCE_MODEL_EXISTS_BY_NAME_MESSAGE;
+
 @Service
 public class ExperienceModelService {
 
@@ -32,9 +37,9 @@ public class ExperienceModelService {
 
     public ExperienceModelDtoResponse add(Long serviceCenterId, ExperienceModelAddDtoRequest dto) {
         if (existsByNameAndServiceCenterId(dto.getName(), serviceCenterId))
-            throw new DtoException("Опыт с таким названием уже существует","experience-model/exists-by-name");
+            throw new DtoException(EXPERIENCE_MODEL_EXISTS_BY_NAME_MESSAGE, EXPERIENCE_MODEL_EXISTS_BY_NAME_CODE);
         if (existsByCoefficientAndServiceCenterId(dto.getCoefficient(), serviceCenterId))
-            throw new DtoException("Опыт с таким процентом уже существует","experience-model/exists-by-coefficient");
+            throw new DtoException(EXPERIENCE_MODEL_EXISTS_BY_COEFFICIENT_MESSAGE, EXPERIENCE_MODEL_EXISTS_BY_COEFFICIENT_CODE);
         ExperienceModel experienceModel = addDtoToModel(dto);
         experienceModel.setServiceCenter(serviceCenterService.get(serviceCenterId));
         return modelToDtoResponse(save(experienceModel));
@@ -64,9 +69,9 @@ public class ExperienceModelService {
 
     public ExperienceModelDtoResponse update(Long experienceId, Long serviceCenterId, ExperienceModelUpdateDtoRequest dto) {
         if (existsByNameAndIdNotLikeAndServiceCenterId(dto.getName(), experienceId, serviceCenterId))
-            throw new DtoException("Опыт с таким названием уже существует","experience-model/exists-by-name");
+            throw new DtoException(EXPERIENCE_MODEL_EXISTS_BY_NAME_MESSAGE, EXPERIENCE_MODEL_EXISTS_BY_NAME_CODE);
         if (existsByCoefficientAndIdNotLikeAndServiceCenterId(dto.getCoefficient(), experienceId, serviceCenterId))
-            throw new DtoException("Опыт с таким процентом уже существует","experience-model/exists-by-coefficient");
+            throw new DtoException(EXPERIENCE_MODEL_EXISTS_BY_COEFFICIENT_MESSAGE, EXPERIENCE_MODEL_EXISTS_BY_COEFFICIENT_CODE);
         ExperienceModel experienceModel = get(experienceId, serviceCenterId);
         experienceModel = updateDtoToModel(experienceModel,dto);
         return modelToDtoResponse(save(experienceModel));

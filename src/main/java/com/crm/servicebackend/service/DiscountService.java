@@ -18,6 +18,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
+import static com.crm.servicebackend.constant.response.discount.DiscountResponseCode.DISCOUNT_EXISTS_BY_NAME_CODE;
+import static com.crm.servicebackend.constant.response.discount.DiscountResponseCode.DISCOUNT_EXISTS_BY_PERCENTAGE_CODE;
+import static com.crm.servicebackend.constant.response.discount.DiscountResponseMessage.DISCOUNT_EXISTS_BY_NAME_MESSAGE;
+import static com.crm.servicebackend.constant.response.discount.DiscountResponseMessage.DISCOUNT_EXISTS_BY_PERCENTAGE_MESSAGE;
+
+
 @Service
 public class DiscountService {
 
@@ -32,9 +38,9 @@ public class DiscountService {
 
     public DiscountDtoResponse add(Long serviceCenterId, DiscountAddDtoRequest dto) {
         if (existsByDiscountNameAndServiceCenterId(dto.getDiscountName(), serviceCenterId))
-            throw new DtoException("Скидка с таким названием уже существует","discount/exists-by-name");
+            throw new DtoException(DISCOUNT_EXISTS_BY_NAME_MESSAGE, DISCOUNT_EXISTS_BY_NAME_CODE);
         if (existsByPercentageAndServiceCenterId(dto.getPercentage(), serviceCenterId))
-            throw new DtoException("Скидка с таким процентом уже существует","discount/exists-by-percent");
+            throw new DtoException(DISCOUNT_EXISTS_BY_PERCENTAGE_MESSAGE, DISCOUNT_EXISTS_BY_PERCENTAGE_CODE);
         Discount discount = addDtoToModel(dto);
         discount.setServiceCenter(serviceCenterService.get(serviceCenterId));
         return modelToDtoResponse(save(discount));
@@ -60,9 +66,9 @@ public class DiscountService {
 
     public DiscountDtoResponse update(Long discountId, Long serviceCenterId, DiscountUpdateDtoRequest dto) {
         if (existsByDiscountNameAndIdNotLikeAndServiceCenterId(dto.getDiscountName(), discountId, serviceCenterId))
-            throw new DtoException("Скидка с таким названием уже существует","discount/exists-by-name");
+            throw new DtoException(DISCOUNT_EXISTS_BY_NAME_MESSAGE, DISCOUNT_EXISTS_BY_NAME_CODE);
         if (existsByPercentageAndIdNotLikeAndServiceCenterId(dto.getPercentage(), discountId, serviceCenterId))
-            throw new DtoException("Скидка с таким процентом уже существует","discount/exists-by-percent");
+            throw new DtoException(DISCOUNT_EXISTS_BY_PERCENTAGE_MESSAGE, DISCOUNT_EXISTS_BY_PERCENTAGE_CODE);
         Discount discount = get(discountId, serviceCenterId);
         discount = updateDtoToModel(discount, dto);
         return modelToDtoResponse(save(discount));
