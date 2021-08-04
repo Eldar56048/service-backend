@@ -26,6 +26,11 @@ import org.springframework.data.domain.Sort;
 import java.util.Date;
 import java.util.Map;
 
+import static com.crm.servicebackend.constant.ConstantVariables.*;
+import static com.crm.servicebackend.constant.response.order.OrderResponseCode.*;
+import static com.crm.servicebackend.constant.response.order.OrderResponseMessage.*;
+import static com.crm.servicebackend.constant.response.storage.StorageResponseCode.PRODUCT_STORAGE_NOT_ENOUGH_CODE;
+import static com.crm.servicebackend.constant.response.storage.StorageResponseMessage.PRODUCT_STORAGE_NOT_ENOUGH_MESSAGE;
 
 @org.springframework.stereotype.Service
 public class OrderService {
@@ -117,7 +122,7 @@ public class OrderService {
         ServiceCenter serviceCenter = discount.getServiceCenter();
         Order order = null;
         Client client = null;
-        if((discount.getDiscountName().equals("Стандартный")==false)&&(onlyDigits(dto.getClientId(),dto.getClientId().length())==false)){
+        if((discount.getDiscountName().equals(STANDARD_DISCOUNT_NAME)==false)&&(onlyDigits(dto.getClientId(),dto.getClientId().length())==false)){
             String surname = "";
             String name = "";
             String[] words = dto.getClientId().split(" ");
@@ -127,7 +132,7 @@ public class OrderService {
             }
             else{
                 name = words[0];
-                surname = "Клиент";
+                surname = DEFAULT_CLIENT_SURNAME;
             }
             client = new Client(name,surname,dto.getClient_number(),discount);
             client.setServiceCenter(serviceCenter);
@@ -157,7 +162,7 @@ public class OrderService {
         Discount discount = discountService.get(dto.getDiscount_id(), serviceCenterId);
         Client client = null;
         ServiceCenter serviceCenter = order.getServiceCenter();
-        if((discount.getDiscountName().equals("Стандартный")==false)&&(onlyDigits(dto.getClientId(),dto.getClientId().length())==false)){
+        if((discount.getDiscountName().equals(STANDARD_DISCOUNT_NAME)==false)&&(onlyDigits(dto.getClientId(),dto.getClientId().length())==false)){
             String surname = "";
             String name = "";
             String[] words = dto.getClientId().split(" ");
@@ -167,7 +172,7 @@ public class OrderService {
             }
             else{
                 name = words[0];
-                surname = "Клиент";
+                surname = DEFAULT_CLIENT_SURNAME;
             }
             client = new Client(name,surname,dto.getClient_number(),discount);
             client.setServiceCenter(serviceCenter);
@@ -207,7 +212,7 @@ public class OrderService {
         Storage storage = storageService.get(dto.getProduct_id(), serviceCenterId);
         ServiceCenter serviceCenter = order.getServiceCenter();
         if (storage.getQuantity() < dto.getQuantity()) {
-            throw new DtoException("Не хватает товаров на складе. Нужно "+(dto.getQuantity()-storage.getQuantity())+"шт", "storage/product-not-enough");
+            throw new DtoException(PRODUCT_STORAGE_NOT_ENOUGH_MESSAGE((dto.getQuantity()-storage.getQuantity())), PRODUCT_STORAGE_NOT_ENOUGH_CODE);
         }
         OrderItem orderItem = new OrderItem(dto.getQuantity(), order, product,user, (int) productService.getLastPrice(dto.getProduct_id(), serviceCenterId));
         storage.setQuantity(storage.getQuantity() - dto.getQuantity());
@@ -239,11 +244,10 @@ public class OrderService {
             order.setDoneUser(user);
             order.setDoneDate(new Date());
         } else {
-            throw new DtoException("Невозможно изменить статус заказа. Так как статус заказа "+order.getStatus().toString(),"order/status-not-change");
+            throw new DtoException(ORDER_STATUS_NOT_CHANGED_MESSAGE(order.getStatus().toString()), ORDER_STATUS_NOT_CHANGED_CODE);
         }
         return modelToDtoResponse(save(order));
     }
-
 
     public OrderDtoResponse updateComment(Long orderId, Long serviceCenterId, OrderUpdateCommentDtoRequest dto){
         Order order = get(orderId, serviceCenterId);
@@ -254,13 +258,9 @@ public class OrderService {
     public OrderDtoResponse notify(Long orderId, Long serviceCenterId){
         Order order = get(orderId, serviceCenterId);
         if (order.getNotified()==true) {
-            throw new DtoException("Клиент уже уведомлен", "order/notified");
+            throw new DtoException(ORDER_ALREADY_NOTIFIED_MESSAGE, ORDER_ALREADY_NOTIFIED_CODE);
         }
-        String message = "Ваш заказ №" + order.getId() + " готов \n" +
-                "Кто сделал: " + order.getDoneUser().getSurname() + " " + order.getDoneUser().getName() + "\n" +
-                "Тел: " + order.getDoneUser().getPhoneNumber() + "\n" +
-                "Цена: " + order.getPrice() + "\n" +
-                "С уважением команда "+order.getServiceCenter().getName();
+        String message = ORDER_NOTIFY_MESSAGE(order);
         String phoneNumber = "";
         if (order.getPhoneNumber() != null) {
             phoneNumber = order.getPhoneNumber();
@@ -269,7 +269,7 @@ public class OrderService {
         }
         boolean send = smsc.send_sms(phoneNumber, message, 1, "", "", 0, "", "");
         if (send == false) {
-            throw new DtoException("Клиент не уведомлен", "order/not-notified");
+            throw new DtoException(ORDER_NOT_NOTIFIED_MESSAGE, ORDER_NOT_NOTIFIED_CODE);
         }
         order.setNotified(send);
         return modelToDtoResponse(save(order));
@@ -281,7 +281,7 @@ public class OrderService {
             order.setStatus(Status.WENTCASHIER);
             order.setGiveUser(user);
         } else {
-            throw new DtoException("Невозможно изменить статус заказа. Так как статус заказа "+order.getStatus().toString(),"order/status-not-change");
+            throw new DtoException(ORDER_STATUS_NOT_CHANGED_MESSAGE(order.getStatus().toString()), ORDER_STATUS_NOT_CHANGED_CODE);
         }
         return modelToDtoResponse(save(order));
     }

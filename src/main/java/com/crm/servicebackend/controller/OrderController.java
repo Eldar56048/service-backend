@@ -20,6 +20,25 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Map;
 
+import static com.crm.servicebackend.constant.response.discount.DiscountResponseCode.DISCOUNT_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.response.discount.DiscountResponseMessage.DISCOUNT_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.response.model.ModelResponseCode.MODEL_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.response.model.ModelResponseMessage.MODEL_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.response.order.OrderResponseCode.ORDER_DELETED_CODE;
+import static com.crm.servicebackend.constant.response.order.OrderResponseCode.ORDER_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.response.order.OrderResponseMessage.ORDER_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.response.orderItem.OrderItemResponseCode.ORDER_ITEM_DELETED_CODE;
+import static com.crm.servicebackend.constant.response.orderItem.OrderItemResponseCode.ORDER_ITEM_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.response.orderItem.OrderItemResponseMessage.ORDER_ITEM_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.response.product.ProductResponseCode.PRODUCT_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.response.product.ProductResponseMessage.PRODUCT_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.response.service.ServiceResponseCode.SERVICE_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.response.service.ServiceResponseMessage.SERVICE_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseCode.SERVICE_CENTER_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseMessage.SERVICE_CENTER_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.response.type.TypeResponseCode.TYPE_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.response.type.TypeResponseMessage.TYPE_NOT_FOUND_MESSAGE;
+
 @RestController
 @RequestMapping("/api/v1/orders")
 public class OrderController {
@@ -53,7 +72,7 @@ public class OrderController {
         Map<String, Object> response;
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (title.length()<=0)
             response = service.getAll(serviceCenterId,page-1, size, sortBy, orderBy);
         else
@@ -74,7 +93,7 @@ public class OrderController {
         Map<String, Object> response;
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (title.length()<=0)
             response = service.getAllByStatus(serviceCenterId, status, page-1, size, sortBy, orderBy);
         else
@@ -87,13 +106,13 @@ public class OrderController {
     public ResponseEntity<?> add(@AuthenticationPrincipal User user, @Valid @RequestBody OrderAddDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдена", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!modelService.existsByIdAndServiceCenterId(dto.getModel_id(), serviceCenterId))
-            throw new ResourceNotFoundException("Модель с идентификатором № "+dto.getModel_id()+" не найдено", "model/not-found");
+            throw new ResourceNotFoundException(MODEL_NOT_FOUND_MESSAGE(dto.getModel_id()), MODEL_NOT_FOUND_CODE);
         if (!typeService.existsByIdAndServiceCenterId(dto.getType_id(), serviceCenterId))
-            throw new ResourceNotFoundException("Тип устройства с идентификатором № "+dto.getType_id()+" не найдено", "type/not-found");
+            throw new ResourceNotFoundException(TYPE_NOT_FOUND_MESSAGE(dto.getType_id()), TYPE_NOT_FOUND_CODE);
         if (!discountService.existsByIdAndServiceCenterId(dto.getDiscount_id(), serviceCenterId))
-            throw new ResourceNotFoundException("Скидка с идентификатором № "+dto.getDiscount_id()+" не найдено", "discount/not-found");
+            throw new ResourceNotFoundException(DISCOUNT_NOT_FOUND_MESSAGE(dto.getDiscount_id()), DISCOUNT_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.add(serviceCenterId, user, dto));
     }
 
@@ -103,7 +122,7 @@ public class OrderController {
     ) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.getProfit(serviceCenterId));
     }
 
@@ -114,9 +133,9 @@ public class OrderController {
     ) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if(!service.existsByIdAndServiceCenterId(orderId, serviceCenterId))
-            throw new ResourceNotFoundException("Заказ с идентификатором № "+orderId+" не найдено", "order/not-found");
+            throw new ResourceNotFoundException(ORDER_NOT_FOUND_MESSAGE(orderId), ORDER_NOT_FOUND_CODE);
         return ResponseEntity.ok(OrderFacade.modelToOrderDtoResponse(service.get(orderId, serviceCenterId)));
     }
 
@@ -124,9 +143,9 @@ public class OrderController {
     public ResponseEntity<?> updateOrder(@AuthenticationPrincipal User user, @PathVariable Long orderId, @Valid @RequestBody OrderAddDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if(!service.existsByIdAndServiceCenterId(orderId, serviceCenterId))
-            throw new ResourceNotFoundException("Заказ с идентификатором № "+serviceCenterId+" не найдено", "order/not-found");
+            throw new ResourceNotFoundException(ORDER_NOT_FOUND_MESSAGE(orderId), ORDER_NOT_FOUND_CODE);
         return ResponseEntity.ok((service.update(orderId, serviceCenterId, dto)));
     }
 
@@ -134,7 +153,7 @@ public class OrderController {
     public ResponseEntity<?> getOrdersCount(@AuthenticationPrincipal User user) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.getOrdersCount(serviceCenterId));
     }
 
@@ -142,11 +161,11 @@ public class OrderController {
     public ResponseEntity<?> addProductToOrderPost(@AuthenticationPrincipal User user, @PathVariable long orderId, @Valid @RequestBody OrderAddProductDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if(!service.existsByIdAndServiceCenterId(orderId, serviceCenterId))
-            throw new ResourceNotFoundException("Заказ с идентификатором № "+serviceCenterId+" не найдено", "order/not-found");
+            throw new ResourceNotFoundException(ORDER_NOT_FOUND_MESSAGE(orderId), ORDER_NOT_FOUND_CODE);
         if (!productService.existsByIdAndServiceCenterId(dto.getProduct_id(), serviceCenterId))
-            throw new ResourceNotFoundException("Товар с идентификатором № "+dto.getProduct_id()+" не найдено", "product/not-found");
+            throw new ResourceNotFoundException(PRODUCT_NOT_FOUND_MESSAGE(dto.getProduct_id()), PRODUCT_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.addProductToOrder(orderId, dto, serviceCenterId, user));
     }
 
@@ -154,11 +173,11 @@ public class OrderController {
     public ResponseEntity<?> addServiceToOrder(@AuthenticationPrincipal User user, @PathVariable long orderId,@Valid @RequestBody OrderAddServiceDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if(!service.existsByIdAndServiceCenterId(orderId, serviceCenterId))
-            throw new ResourceNotFoundException("Заказ с идентификатором № "+serviceCenterId+" не найдено", "order/not-found");
+            throw new ResourceNotFoundException(ORDER_NOT_FOUND_MESSAGE(orderId), ORDER_NOT_FOUND_CODE);
         if (!serviceModelService.existsByIdAndServiceCenterId(dto.getService_id(), serviceCenterId))
-            throw new ResourceNotFoundException("Услуга с идентификатором № "+dto.getService_id()+" не найдено", "service/not-found");
+            throw new ResourceNotFoundException(SERVICE_NOT_FOUND_MESSAGE(dto.getService_id()), SERVICE_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.addServiceToOrder(orderId, serviceCenterId, dto, user));
     }
 
@@ -166,9 +185,9 @@ public class OrderController {
     public ResponseEntity<?> orderDone(@AuthenticationPrincipal User user, @PathVariable long orderId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if(!service.existsByIdAndServiceCenterId(orderId, serviceCenterId))
-            throw new ResourceNotFoundException("Заказ с идентификатором № "+serviceCenterId+" не найдено", "order/not-found");
+            throw new ResourceNotFoundException(ORDER_NOT_FOUND_MESSAGE(orderId), ORDER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.doneOrder(orderId, serviceCenterId, user));
     }
 
@@ -176,9 +195,9 @@ public class OrderController {
     public ResponseEntity<?> orderCommentUpdate(@AuthenticationPrincipal User user, @PathVariable long orderId, @Valid @RequestBody OrderUpdateCommentDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if(!service.existsByIdAndServiceCenterId(orderId, serviceCenterId))
-            throw new ResourceNotFoundException("Заказ с идентификатором № "+serviceCenterId+" не найдено", "order/not-found");
+            throw new ResourceNotFoundException(ORDER_NOT_FOUND_MESSAGE(orderId), ORDER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.updateComment(orderId, serviceCenterId, dto));
     }
 
@@ -186,9 +205,9 @@ public class OrderController {
     public ResponseEntity<?> notify(@AuthenticationPrincipal User user, @PathVariable long orderId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if(!service.existsByIdAndServiceCenterId(orderId, serviceCenterId))
-            throw new ResourceNotFoundException("Заказ с идентификатором № "+serviceCenterId+" не найдено", "order/not-found");
+            throw new ResourceNotFoundException(ORDER_NOT_FOUND_MESSAGE(orderId), ORDER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.notify(orderId, serviceCenterId));
     }
 
@@ -196,9 +215,9 @@ public class OrderController {
     public ResponseEntity<?> orderGiven(@AuthenticationPrincipal User user, @PathVariable long orderId){
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if(!service.existsByIdAndServiceCenterId(orderId, serviceCenterId))
-            throw new ResourceNotFoundException("Заказ с идентификатором № "+serviceCenterId+" не найдено", "order/not-found");
+            throw new ResourceNotFoundException(ORDER_NOT_FOUND_MESSAGE(orderId), ORDER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.orderGiven(orderId, serviceCenterId,user));
     }
 
@@ -207,34 +226,34 @@ public class OrderController {
     public ResponseEntity<?> orderRemove(@PathVariable long orderId, @AuthenticationPrincipal User user){
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if(!service.existsByIdAndServiceCenterId(orderId, serviceCenterId))
-            throw new ResourceNotFoundException("Заказ с идентификатором № "+serviceCenterId+" не найдено", "order/not-found");
+            throw new ResourceNotFoundException(ORDER_NOT_FOUND_MESSAGE(orderId), ORDER_NOT_FOUND_CODE);
         service.removeOrder(orderId, serviceCenterId);
-        return ResponseEntity.status(HttpStatus.OK).body("order/successfully-deleted");
+        return ResponseEntity.status(HttpStatus.OK).body(ORDER_DELETED_CODE);
     }
 
     @DeleteMapping("/{orderId}/{item_id}")
     public ResponseEntity<?> orderItemsRemoveFromOrder(@PathVariable long orderId, @PathVariable long item_id, @AuthenticationPrincipal User user){
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if(!service.existsByIdAndServiceCenterId(orderId, serviceCenterId))
-            throw new ResourceNotFoundException("Заказ с идентификатором № "+serviceCenterId+" не найдено", "order/not-found");
+            throw new ResourceNotFoundException(ORDER_NOT_FOUND_MESSAGE(orderId), ORDER_NOT_FOUND_CODE);
         if(!orderItemService.existsByIdAndServiceCenterIdAndOrderId(item_id,serviceCenterId, orderId))
-            throw new ResourceNotFoundException("Элемент заказа с идентификатором № "+item_id+" не найдено", "order-item/not-found");
+            throw new ResourceNotFoundException(ORDER_ITEM_NOT_FOUND_MESSAGE(item_id), ORDER_ITEM_NOT_FOUND_CODE);
         Order order = service.get(orderId, serviceCenterId);
         service.deleteOrderItemFromOrder(order, item_id);
-        return ResponseEntity.status(HttpStatus.OK).body("order/order-item/successfully-deleted");
+        return ResponseEntity.status(HttpStatus.OK).body(ORDER_ITEM_DELETED_CODE);
     }
 
     @GetMapping("/{orderId}/payment")
     public ResponseEntity<?> payment(@PathVariable Long orderId, @AuthenticationPrincipal User user, @RequestParam String type){
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if(!service.existsByIdAndServiceCenterId(orderId, serviceCenterId))
-            throw new ResourceNotFoundException("Заказ с идентификатором № "+serviceCenterId+" не найдено", "order/not-found");
+            throw new ResourceNotFoundException(ORDER_NOT_FOUND_MESSAGE(orderId), ORDER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.setPaymentType(orderId, serviceCenterId,type));
     }
 
@@ -242,9 +261,9 @@ public class OrderController {
     public ResponseEntity<?> updatePaymentType(@AuthenticationPrincipal User user, @PathVariable  long orderId,@RequestParam String payment){
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if(!service.existsByIdAndServiceCenterId(orderId, serviceCenterId))
-            throw new ResourceNotFoundException("Заказ с идентификатором № "+serviceCenterId+" не найдено", "order/not-found");
+            throw new ResourceNotFoundException(ORDER_NOT_FOUND_MESSAGE(orderId), ORDER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.updatePaymentType(orderId, serviceCenterId,payment));
     }
 }

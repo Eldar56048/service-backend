@@ -20,6 +20,11 @@ import org.springframework.data.domain.Sort;
 import java.util.List;
 import java.util.Map;
 
+import static com.crm.servicebackend.constant.response.product.ProductResponseCode.PRODUCT_EXISTS_BY_NAME_CODE;
+import static com.crm.servicebackend.constant.response.product.ProductResponseMessage.PRODUCT_EXISTS_BY_NAME_MESSAGE;
+import static com.crm.servicebackend.constant.response.productIncomingHistory.ProductIncomingHistoryResponseCode.PRODUCT_NOT_ENOUGH_IN_STORAGE_CODE;
+import static com.crm.servicebackend.constant.response.productIncomingHistory.ProductIncomingHistoryResponseMessage.PRODUCT_NOT_ENOUGH_IN_STORAGE_MESSAGE;
+
 @org.springframework.stereotype.Service
 public class ProductService {
     @Autowired
@@ -41,7 +46,7 @@ public class ProductService {
 
     public ProductDtoResponse add(Long serviceCenterId, ProductAddDtoRequest dto) {
         if (existsByNameAndServiceCenterId(dto.getName(), serviceCenterId))
-            throw new DtoException("Товар с таким наименованием уже существует","product/exists-by-name");
+            throw new DtoException(PRODUCT_EXISTS_BY_NAME_MESSAGE, PRODUCT_EXISTS_BY_NAME_CODE);
         ServiceCenter serviceCenter = serviceCenterService.get(serviceCenterId);
         Product product = addDtoToModel(dto);
         product.setServiceCenter(serviceCenter);
@@ -75,7 +80,7 @@ public class ProductService {
 
     public ProductDtoResponse update(Long productId, Long serviceCenterId, ProductUpdateDtoRequest dto) {
         if (existsByNameAndIdNotLikeAndServiceCenterId(dto.getName(), productId, serviceCenterId))
-            throw new DtoException("Товар с таким наименованием уже существует","product/exists-by-name");
+            throw new DtoException(PRODUCT_EXISTS_BY_NAME_MESSAGE, PRODUCT_EXISTS_BY_NAME_CODE);
         Product product = get(productId, serviceCenterId);
         product = updateDtoToModel(product, dto);
         product = save(product);
@@ -180,7 +185,7 @@ public class ProductService {
             incomingHistoryService.deleteById(historyId);
             storageService.save(storage);
         } else {
-            throw new DtoException("Невозможно удалить историю добавление №"+historyId+" так как на складе недостаточно товаров. Нужно еще "+(incomingHistory.getQuantity()-storage.getQuantity()), "incoming-history/not-enough-in-storage");
+            throw new DtoException(PRODUCT_NOT_ENOUGH_IN_STORAGE_MESSAGE(historyId, incomingHistory.getQuantity()-storage.getQuantity()), PRODUCT_NOT_ENOUGH_IN_STORAGE_CODE);
         }
     }
 

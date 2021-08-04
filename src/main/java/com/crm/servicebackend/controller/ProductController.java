@@ -20,6 +20,16 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Map;
 
+import static com.crm.servicebackend.constant.response.product.ProductResponseCode.*;
+import static com.crm.servicebackend.constant.response.product.ProductResponseMessage.PRODUCT_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.response.product.ProductResponseMessage.PRODUCT_TWO_ANOTHER_ID_MESSAGE;
+import static com.crm.servicebackend.constant.response.productIncomingHistory.ProductIncomingHistoryResponseCode.PRODUCT_INCOMING_HISTORY_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.response.productIncomingHistory.ProductIncomingHistoryResponseMessage.PRODUCT_INCOMING_HISTORY_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.response.provider.ProviderResponseCode.PROVIDER_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.response.provider.ProviderResponseMessage.PROVIDER_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseCode.SERVICE_CENTER_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseMessage.SERVICE_CENTER_NOT_FOUND_MESSAGE;
+
 @RestController
 @RequestMapping("/api/v1/products")
 public class ProductController {
@@ -41,7 +51,7 @@ public class ProductController {
     public ResponseEntity<?> getAllForSelect(@AuthenticationPrincipal User user) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.getProductsForSelect(serviceCenterId));
     }
 
@@ -58,7 +68,7 @@ public class ProductController {
         Map<String, Object> response;
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (title.length()<=0)
             response = service.getAll(serviceCenterId,page-1, size, sortBy, orderBy);
         else
@@ -71,7 +81,7 @@ public class ProductController {
     public ResponseEntity<?> add(@AuthenticationPrincipal User user, @Valid @RequestBody ProductAddDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.add(serviceCenterId, dto));
     }
 
@@ -80,9 +90,9 @@ public class ProductController {
     public ResponseEntity<?> get(@AuthenticationPrincipal User user, @PathVariable Long productId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(productId, serviceCenterId))
-            throw new ResourceNotFoundException("Товар с идентификатором № "+productId+" не найдено", "product/not-found");
+            throw new ResourceNotFoundException(PRODUCT_NOT_FOUND_MESSAGE(productId), PRODUCT_NOT_FOUND_CODE);
         return ResponseEntity.ok((service.getDtoResponse(productId, serviceCenterId)));
     }
 
@@ -91,7 +101,7 @@ public class ProductController {
     public ResponseEntity<?> getProductTopSale(@AuthenticationPrincipal User user) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.getTopSale(serviceCenterId));
     }
 
@@ -100,7 +110,7 @@ public class ProductController {
     public ResponseEntity<?> getSoldProductCount(@AuthenticationPrincipal User user) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.getSoldProductCount(serviceCenterId));
     }
 
@@ -109,9 +119,9 @@ public class ProductController {
     public ResponseEntity<?> getProductSoldCount(@AuthenticationPrincipal User user,@PathVariable Long productId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(productId, serviceCenterId))
-            throw new ResourceNotFoundException("Товар с идентификатором № "+productId+" не найдено", "product/not-found");
+            throw new ResourceNotFoundException(PRODUCT_NOT_FOUND_MESSAGE(productId), PRODUCT_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.getProductSoldCount(productId, serviceCenterId).getSoldCount());
     }
 
@@ -120,9 +130,9 @@ public class ProductController {
     public ResponseEntity<?> getMonthlySold(@AuthenticationPrincipal User user, @PathVariable long productId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(productId, serviceCenterId))
-            throw new ResourceNotFoundException("Товар с идентификатором № "+productId+" не найдено", "product/not-found");
+            throw new ResourceNotFoundException(PRODUCT_NOT_FOUND_MESSAGE(productId), PRODUCT_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.getMonthlySales(productId, serviceCenterId));
     }
 
@@ -131,9 +141,9 @@ public class ProductController {
     public ResponseEntity<?> getLastPurchasePrice(@AuthenticationPrincipal User user,@PathVariable long productId){
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(productId, serviceCenterId))
-            throw new ResourceNotFoundException("Товар с идентификатором № "+productId+" не найдено", "product/not-found");
+            throw new ResourceNotFoundException(PRODUCT_NOT_FOUND_MESSAGE(productId), PRODUCT_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.getLastPrice(productId, serviceCenterId));
     }
 
@@ -142,11 +152,11 @@ public class ProductController {
     public ResponseEntity<?> update(@AuthenticationPrincipal User user, @PathVariable long productId, @Valid @RequestBody ProductUpdateDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if (dto.getId()!=productId)
-            throw new DtoException("Два разных id", "product/two-another-id");
+            throw new DtoException(PRODUCT_TWO_ANOTHER_ID_MESSAGE, PRODUCT_TWO_ANOTHER_ID_CODE);
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(productId, serviceCenterId))
-            throw new ResourceNotFoundException("Товар с идентификатором № "+productId+" не найдено", "product/not-found");
+            throw new ResourceNotFoundException(PRODUCT_NOT_FOUND_MESSAGE(productId), PRODUCT_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.update(productId,serviceCenterId, dto));
     }
 
@@ -155,7 +165,7 @@ public class ProductController {
     public ResponseEntity<?> getTopProfitProducts(@AuthenticationPrincipal User user, @RequestParam(defaultValue = "5") Long limit) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.getTopProfitProducts(serviceCenterId, limit));
     }
 
@@ -164,11 +174,11 @@ public class ProductController {
     public ResponseEntity<?> addProductToStorage(@AuthenticationPrincipal User user, @PathVariable long productId, @Valid @RequestBody AddProductToStorageDtoRequest dto){
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(productId, serviceCenterId))
-            throw new ResourceNotFoundException("Товар с идентификатором № "+productId+" не найдено", "product/not-found");
+            throw new ResourceNotFoundException(PRODUCT_NOT_FOUND_MESSAGE(productId), PRODUCT_NOT_FOUND_CODE);
         if (!providerService.existsByIdAndServiceCenterId(dto.getProviderId(), serviceCenterId))
-            throw new ResourceNotFoundException("Поставщик с идентификатором № "+ dto.getProviderId()+" не найдено", "provider/not-found");
+            throw new ResourceNotFoundException(PROVIDER_NOT_FOUND_MESSAGE(dto.getProviderId()), PROVIDER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.addProductStorage(productId, serviceCenterId,dto));
     }
 
@@ -177,11 +187,11 @@ public class ProductController {
     public ResponseEntity<?> deleteProduct(@AuthenticationPrincipal User user, @PathVariable long productId){
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(productId, serviceCenterId))
-            throw new ResourceNotFoundException("Товар с идентификатором № "+productId+" не найдено", "product/not-found");
+            throw new ResourceNotFoundException(PRODUCT_NOT_FOUND_MESSAGE(productId), PRODUCT_NOT_FOUND_CODE);
         service.delete(productId,serviceCenterId);
-        return ResponseEntity.ok("product/deleted");
+        return ResponseEntity.ok(PRODUCT_DELETED_CODE);
     }
 
     @GetMapping("/{productId}/history/incoming")
@@ -197,9 +207,9 @@ public class ProductController {
     ){
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(productId, serviceCenterId))
-            throw new ResourceNotFoundException("Товар с идентификатором № "+productId+" не найдено", "product/not-found");
+            throw new ResourceNotFoundException(PRODUCT_NOT_FOUND_MESSAGE(productId), PRODUCT_NOT_FOUND_CODE);
         Map<String, Object> response;
         if (title.length()<=0)
             response = incomingHistoryService.getAllByProduct(productId, serviceCenterId,page-1, size, sortBy, orderBy);
@@ -213,13 +223,13 @@ public class ProductController {
     public ResponseEntity<?> deleteIncomingHistory(@AuthenticationPrincipal User user, @PathVariable long productId,@PathVariable  long historyId){
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(productId, serviceCenterId))
-            throw new ResourceNotFoundException("Товар с идентификатором № "+productId+" не найдено", "product/not-found");
+            throw new ResourceNotFoundException(PRODUCT_NOT_FOUND_MESSAGE(productId), PRODUCT_NOT_FOUND_CODE);
         if (!incomingHistoryService.existsByIdAndProductIdAndServiceCenterId(historyId, productId, serviceCenterId)) {
-            throw new ResourceNotFoundException("История добавление товара с идентификатором № "+historyId+" не найдено", "incoming-history/not-found");
+            throw new ResourceNotFoundException(PRODUCT_INCOMING_HISTORY_NOT_FOUND_MESSAGE(historyId), PRODUCT_INCOMING_HISTORY_NOT_FOUND_CODE);
         }
         service.deleteIncomingHistory(serviceCenterId,productId,historyId);
-        return ResponseEntity.status(HttpStatus.OK).body("product/incoming-history-successfully-deleted");
+        return ResponseEntity.status(HttpStatus.OK).body(PRODUCT_INCOMING_HISTORY_DELETED_CODE);
     }
 }
