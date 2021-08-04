@@ -18,6 +18,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
+import static com.crm.servicebackend.constant.response.provider.ProviderResponseCode.PROVIDER_EXISTS_BY_NAME_CODE;
+import static com.crm.servicebackend.constant.response.provider.ProviderResponseMessage.PROVIDER_EXISTS_BY_NAME_MESSAGE;
+
+
 @Service
 public class ProviderService {
     private final ProviderRepository repository;
@@ -31,7 +35,7 @@ public class ProviderService {
 
     public ProviderDtoResponse add(Long serviceCenterId, ProviderAddDtoRequest dto) {
         if (existsByNameAndServiceCenterId(dto.getName(), serviceCenterId))
-            throw new DtoException("Поставщик с таким именем уже существует","provider/exists-by-name");
+            throw new DtoException(PROVIDER_EXISTS_BY_NAME_MESSAGE, PROVIDER_EXISTS_BY_NAME_CODE);
         Provider provider = addDtoToModel(dto);
         provider.setServiceCenter(serviceCenterService.get(serviceCenterId));
         return modelToDtoResponse(save(provider));
@@ -57,7 +61,7 @@ public class ProviderService {
 
     public ProviderDtoResponse update(Long providerId, Long serviceCenterId, ProviderUpdateDtoRequest dto) {
         if (existsByNameAndIdNotLikeAndServiceCenterId(dto.getName(), providerId, serviceCenterId))
-            throw new DtoException("Поставщик с таким именем уже существует","provider/exists-by-name");
+            throw new DtoException(PROVIDER_EXISTS_BY_NAME_MESSAGE, PROVIDER_EXISTS_BY_NAME_CODE);
         Provider provider = get(providerId, serviceCenterId);
         provider = updateDtoToModel(provider, dto);
         return modelToDtoResponse(save(provider));

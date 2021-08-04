@@ -26,6 +26,12 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 import java.util.Set;
 
+import static com.crm.servicebackend.constant.response.auth.AuthResponseCode.INVALID_USERNAME_OR_PASSWORD_CODE;
+import static com.crm.servicebackend.constant.response.auth.AuthResponseCodeMessage.INVALID_USERNAME_OR_PASSWORD_MESSAGE;
+import static com.crm.servicebackend.constant.response.user.UserResponseCode.USER_EXISTS_BY_USERNAME_CODE;
+import static com.crm.servicebackend.constant.response.user.UserResponseMessage.USER_EXISTS_BY_USERNAME_MESSAGE;
+
+
 @Service(value = "userService")
 public class UserService implements UserDetailsService {
     private final UserRepository repository;
@@ -46,7 +52,7 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = repository.findByUsername(username);
         if(user == null){
-            throw new AuthException("Неправильное имя пользователя или пароль", "auth/invalid-username-or-password");
+            throw new AuthException(INVALID_USERNAME_OR_PASSWORD_MESSAGE, INVALID_USERNAME_OR_PASSWORD_CODE);
         }
         return user;
     }
@@ -54,7 +60,7 @@ public class UserService implements UserDetailsService {
     public User getByUsername(String username) {
         User user = repository.findByUsername(username);
         if(user == null){
-            throw new AuthException("Неправильное имя пользователя или пароль", "auth/invalid-username-or-password");
+            throw new AuthException(INVALID_USERNAME_OR_PASSWORD_MESSAGE, INVALID_USERNAME_OR_PASSWORD_CODE);
         }
         return user;
     }
@@ -62,7 +68,7 @@ public class UserService implements UserDetailsService {
 
     public UserDtoResponse add(Long serviceCenterId, UserAddDtoRequest dto, User user) {
         if (existsByUsername(dto.getUsername()))
-            throw new DtoException("Пользователь с таким логином уже существует","user/exists-by-username");
+            throw new DtoException(USER_EXISTS_BY_USERNAME_MESSAGE, USER_EXISTS_BY_USERNAME_CODE);
         User model = new User();
         model = addDtoToModel(dto);
 
@@ -101,7 +107,7 @@ public class UserService implements UserDetailsService {
 
     public User update(Long userId, Long serviceCenterId, UserUpdateDtoRequest dto, User user) {
         if (existsByUsernameAndIdNotLike(dto.getUsername(), userId))
-            throw new DtoException("Пользователь с таким логином уже существует","user/exists-by-username");
+            throw new DtoException(USER_EXISTS_BY_USERNAME_MESSAGE, USER_EXISTS_BY_USERNAME_CODE);
         User model = get(userId, serviceCenterId);
         model = updateDtoToModel(model, dto);
         if (model.getRoles() != dto.getRoles()) {
@@ -113,7 +119,7 @@ public class UserService implements UserDetailsService {
                 model.setRoles(roles);
             }
         }
-        if (model.getExperienceModel().getId() != dto.getExperienceModelId())
+        if (!model.getExperienceModel().getId().equals(dto.getExperienceModelId()))
             model.setExperienceModel(experienceModelService.get(dto.getExperienceModelId(), serviceCenterId));
         if (dto.getPassword().length() != 60)
             model.setPassword(passwordEncoder.encode(dto.getPassword()));

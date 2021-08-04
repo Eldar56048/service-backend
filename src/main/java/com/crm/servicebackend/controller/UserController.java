@@ -20,6 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.crm.servicebackend.constant.response.experienceModel.ExperienceModelResponseCode.EXPERIENCE_MODEL_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.response.experienceModel.ExperienceModelResponseMessage.EXPERIENCE_MODEL_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseCode.SERVICE_CENTER_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseMessage.SERVICE_CENTER_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.response.user.UserResponseCode.*;
+import static com.crm.servicebackend.constant.response.user.UserResponseMessage.USER_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.response.user.UserResponseMessage.USER_TWO_ANOTHER_ID_MESSAGE;
+
 @RestController
 @RequestMapping("/api/v1/users")
 @PreAuthorize("hasAuthority('ADMIN')")
@@ -47,7 +55,7 @@ public class UserController {
         Map<String, Object> response;
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (title.length()<=0)
             response = service.getAll(serviceCenterId,page-1, size, sortBy, orderBy);
         else
@@ -70,9 +78,9 @@ public class UserController {
     public ResponseEntity<?> add(@AuthenticationPrincipal User user, @Valid @RequestBody UserAddDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдена", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!experienceModelService.existsByIdAndServiceCenterId(dto.getExperienceModelId(), serviceCenterId))
-            throw new ResourceNotFoundException("Опыт с идентификатором № "+dto.getExperienceModelId()+" не найдено", "experience-model/not-found");
+            throw new ResourceNotFoundException(EXPERIENCE_MODEL_NOT_FOUND_MESSAGE(dto.getExperienceModelId()), EXPERIENCE_MODEL_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.add(serviceCenterId, dto, user));
     }
 
@@ -80,13 +88,13 @@ public class UserController {
     public ResponseEntity<?> update(@AuthenticationPrincipal User user, @Valid @RequestBody UserUpdateDtoRequest dto, @PathVariable Long userId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if (dto.getId()!=userId)
-            throw new DtoException("Два разных id", "user/two-another-id");
+            throw new DtoException(USER_TWO_ANOTHER_ID_MESSAGE, USER_TWO_ANOTHER_ID_CODE);
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдена", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(dto.getId(), serviceCenterId))
-            throw new ResourceNotFoundException("Пользователь с идентификатором № "+dto.getId()+" не найдено", "user/not-found");
+            throw new ResourceNotFoundException(USER_NOT_FOUND_MESSAGE(dto.getId()), USER_NOT_FOUND_CODE);
         if (!experienceModelService.existsByIdAndServiceCenterId(dto.getExperienceModelId(), serviceCenterId))
-            throw new ResourceNotFoundException("Опыт с идентификатором № "+dto.getExperienceModelId()+" не найдено", "experience-model/not-found");
+            throw new ResourceNotFoundException(EXPERIENCE_MODEL_NOT_FOUND_MESSAGE(dto.getExperienceModelId()), EXPERIENCE_MODEL_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.update(userId, serviceCenterId, dto, user));
     }
 
@@ -94,9 +102,9 @@ public class UserController {
     public ResponseEntity<?> get(@AuthenticationPrincipal User user, @PathVariable Long userId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдена", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(userId, serviceCenterId))
-            throw new ResourceNotFoundException("Пользователь с идентификатором № "+userId+" не найдено", "user/not-found");
+            throw new ResourceNotFoundException(USER_NOT_FOUND_MESSAGE(userId), USER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.get(userId, serviceCenterId));
     }
 
@@ -104,10 +112,10 @@ public class UserController {
     public ResponseEntity<?> delete(@AuthenticationPrincipal User user, @PathVariable Long userId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдена", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(userId, serviceCenterId))
-            throw new ResourceNotFoundException("Пользователь с идентификатором № "+userId+" не найдено", "user/not-found");
+            throw new ResourceNotFoundException(USER_NOT_FOUND_MESSAGE(userId), USER_NOT_FOUND_CODE);
         service.delete(userId);
-        return ResponseEntity.ok("user/deleted");
+        return ResponseEntity.ok(USER_DELETED_CODE);
     }
 }

@@ -17,6 +17,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Map;
 
+import static com.crm.servicebackend.constant.response.service.ServiceResponseCode.*;
+import static com.crm.servicebackend.constant.response.service.ServiceResponseMessage.SERVICE_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.response.service.ServiceResponseMessage.SERVICE_TWO_ANOTHER_ID_MESSAGE;
+import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseCode.SERVICE_CENTER_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseMessage.SERVICE_CENTER_NOT_FOUND_MESSAGE;
+
 @RestController
 @RequestMapping("/api/v1/services")
 public class ServiceController {
@@ -34,7 +40,7 @@ public class ServiceController {
     public ResponseEntity<?> getAllForSelect(@AuthenticationPrincipal User user) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.getServicesForSelect(serviceCenterId));
     }
 
@@ -51,7 +57,7 @@ public class ServiceController {
         Map<String, Object> response;
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (title.length()<=0)
             response = service.getAll(serviceCenterId,page-1, size, sortBy, orderBy);
         else
@@ -64,7 +70,7 @@ public class ServiceController {
     public ResponseEntity<?> add(@AuthenticationPrincipal User user, @Valid @RequestBody ServiceAddDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.add(serviceCenterId, dto, user));
     }
 
@@ -73,9 +79,9 @@ public class ServiceController {
     public ResponseEntity<?> get(@AuthenticationPrincipal User user, @PathVariable Long serviceId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(serviceId, serviceCenterId))
-            throw new ResourceNotFoundException("Услуга с идентификатором № "+serviceId+" не найдено", "service/not-found");
+            throw new ResourceNotFoundException(SERVICE_NOT_FOUND_MESSAGE(serviceId), SERVICE_NOT_FOUND_CODE);
         return ResponseEntity.ok(ServiceFacade.modelToDtoResponse(service.get(serviceId, serviceCenterId)));
     }
 
@@ -84,9 +90,9 @@ public class ServiceController {
     public ResponseEntity<?> getServiceSoldCount(@AuthenticationPrincipal User user,@PathVariable long serviceId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(serviceId, serviceCenterId))
-            throw new ResourceNotFoundException("Услуга с идентификатором № "+serviceId+" не найдено", "service/not-found");
+            throw new ResourceNotFoundException(SERVICE_NOT_FOUND_MESSAGE(serviceId), SERVICE_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.getServiceSoldCount(serviceCenterId, serviceId).getSoldCount());
     }
 
@@ -95,9 +101,9 @@ public class ServiceController {
     public ResponseEntity<?> getMonthlySold(@PathVariable long serviceId, @AuthenticationPrincipal User user) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(serviceId, serviceCenterId))
-            throw new ResourceNotFoundException("Услуга с идентификатором № "+serviceId+" не найдено", "service/not-found");
+            throw new ResourceNotFoundException(SERVICE_NOT_FOUND_MESSAGE(serviceId), SERVICE_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.getMonthlySold(serviceCenterId, serviceId));
     }
 
@@ -106,7 +112,7 @@ public class ServiceController {
     public ResponseEntity<?> getTopProfitServices(@AuthenticationPrincipal User user, @RequestParam(defaultValue = "5") int limit) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.getTopProfitServices(serviceCenterId, limit));
     }
 
@@ -115,7 +121,7 @@ public class ServiceController {
     public ResponseEntity<?> getTopSale(@AuthenticationPrincipal User user) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.getTopSaleService(serviceCenterId));
     }
 
@@ -124,7 +130,7 @@ public class ServiceController {
     public ResponseEntity<?> getSoldServiceCount(@AuthenticationPrincipal User user) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.getSoldServiceCount(serviceCenterId));
     }
 
@@ -133,11 +139,11 @@ public class ServiceController {
     public ResponseEntity<?> update(@AuthenticationPrincipal User user, @PathVariable Long serviceId, @Valid @RequestBody ServiceUpdateDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if (dto.getId()!=serviceId)
-            throw new DtoException("Два разных id", "service/two-another-id");
+            throw new DtoException(SERVICE_TWO_ANOTHER_ID_MESSAGE, SERVICE_TWO_ANOTHER_ID_CODE);
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(serviceId, serviceCenterId))
-            throw new ResourceNotFoundException("Услуга с идентификатором № "+serviceId+" не найдено", "service/not-found");
+            throw new ResourceNotFoundException(SERVICE_NOT_FOUND_MESSAGE(serviceId), SERVICE_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.update(serviceId, serviceCenterId, dto, user));
     }
 
@@ -146,11 +152,11 @@ public class ServiceController {
     public ResponseEntity<?> delete(@AuthenticationPrincipal User user,@PathVariable Long serviceId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(serviceId, serviceCenterId))
-            throw new ResourceNotFoundException("Услуга с идентификатором № "+serviceId+" не найдено", "service/not-found");
+            throw new ResourceNotFoundException(SERVICE_NOT_FOUND_MESSAGE(serviceId), SERVICE_NOT_FOUND_CODE);
         service.delete(serviceId, serviceCenterId);
-        return ResponseEntity.ok("service/deleted");
+        return ResponseEntity.ok(SERVICE_DELETED_CODE);
     }
 
 }

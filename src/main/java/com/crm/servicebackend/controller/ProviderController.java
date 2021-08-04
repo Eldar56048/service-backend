@@ -17,6 +17,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Map;
 
+import static com.crm.servicebackend.constant.response.provider.ProviderResponseCode.*;
+import static com.crm.servicebackend.constant.response.provider.ProviderResponseMessage.PROVIDER_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.response.provider.ProviderResponseMessage.PROVIDER_TWO_ANOTHER_ID_MESSAGE;
+import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseCode.SERVICE_CENTER_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseMessage.SERVICE_CENTER_NOT_FOUND_MESSAGE;
+
 @RestController
 @RequestMapping("/api/v1/providers")
 public class ProviderController {
@@ -42,7 +48,7 @@ public class ProviderController {
         Map<String, Object> response;
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (title.length()<=0)
             response = service.getAll(serviceCenterId,page-1, size, sortBy, orderBy);
         else
@@ -57,7 +63,7 @@ public class ProviderController {
     ) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.getAllForSelect(serviceCenterId));
     }
 
@@ -66,7 +72,7 @@ public class ProviderController {
     public ResponseEntity<?> add(@AuthenticationPrincipal User user, @Valid @RequestBody ProviderAddDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.add(serviceCenterId, dto));
     }
 
@@ -75,9 +81,9 @@ public class ProviderController {
     public ResponseEntity<?> get(@AuthenticationPrincipal User user, @PathVariable Long providerId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(providerId, serviceCenterId))
-            throw new ResourceNotFoundException("Поставщик с идентификатором № "+providerId+" не найдено", "provider/not-found");
+            throw new ResourceNotFoundException(PROVIDER_NOT_FOUND_MESSAGE(providerId), PROVIDER_NOT_FOUND_CODE);
         return ResponseEntity.ok(ProviderFacade.modelToDtoResponse(service.get(providerId, serviceCenterId)));
     }
 
@@ -85,12 +91,12 @@ public class ProviderController {
     @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> update(@AuthenticationPrincipal User user, @PathVariable Long providerId, @Valid @RequestBody ProviderUpdateDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
-        if (dto.getId()!=providerId)
-            throw new DtoException("Два разных id", "provider/two-another-id");
+        if (!dto.getId().equals(providerId))
+            throw new DtoException(PROVIDER_TWO_ANOTHER_ID_MESSAGE, PROVIDER_TWO_ANOTHER_ID_CODE);
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(providerId, serviceCenterId))
-            throw new ResourceNotFoundException("Поставщик с идентификатором № "+providerId+" не найдено", "provider/not-found");
+            throw new ResourceNotFoundException(PROVIDER_NOT_FOUND_MESSAGE(providerId), PROVIDER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.update(providerId, serviceCenterId, dto));
     }
 
@@ -99,10 +105,10 @@ public class ProviderController {
     public ResponseEntity<?> delete(@AuthenticationPrincipal User user,@PathVariable Long providerId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(providerId, serviceCenterId))
-            throw new ResourceNotFoundException("Поставщик с идентификатором № "+providerId+" не найдено", "provider/not-found");
+            throw new ResourceNotFoundException(PROVIDER_NOT_FOUND_MESSAGE(providerId), PROVIDER_NOT_FOUND_CODE);
         service.delete(providerId);
-        return ResponseEntity.ok("provider/deleted");
+        return ResponseEntity.ok(PROVIDER_DELETED_CODE);
     }
 }

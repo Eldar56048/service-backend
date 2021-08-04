@@ -19,6 +19,14 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Map;
 
+import static com.crm.servicebackend.constant.response.client.ClientResponseCode.*;
+import static com.crm.servicebackend.constant.response.client.ClientResponseMessage.CLIENT_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.response.client.ClientResponseMessage.CLIENT_TWO_ANOTHER_ID_MESSAGE;
+import static com.crm.servicebackend.constant.response.discount.DiscountResponseCode.DISCOUNT_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.response.discount.DiscountResponseMessage.DISCOUNT_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseCode.SERVICE_CENTER_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseMessage.SERVICE_CENTER_NOT_FOUND_MESSAGE;
+
 @RestController
 @RequestMapping("/api/v1/clients")
 public class ClientController {
@@ -50,7 +58,7 @@ public class ClientController {
         Long serviceCenterId = user.getServiceCenter().getId();
         Map<String, Object> response;
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (title.length()<=0)
             response = service.getAll(serviceCenterId,page-1, size, sortBy, orderBy);
         else
@@ -65,7 +73,7 @@ public class ClientController {
     ) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
        return ResponseEntity.ok(service.getAllForSelect(serviceCenterId));
     }
 
@@ -83,9 +91,9 @@ public class ClientController {
         Long serviceCenterId = user.getServiceCenter().getId();
         Map<String, Object> response;
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(clientId, serviceCenterId))
-            throw new ResourceNotFoundException("Клиент с идентификатором № "+clientId+" не найдено", "client/not-found");
+            throw new ResourceNotFoundException(CLIENT_NOT_FOUND_MESSAGE(clientId), CLIENT_NOT_FOUND_CODE);
         if (title.length()<=0)
             response = orderService.getAllByClient(serviceCenterId,clientId, page-1, size, sortBy, orderBy);
         else
@@ -98,9 +106,9 @@ public class ClientController {
     public ResponseEntity<?> add(@AuthenticationPrincipal User user, @Valid @RequestBody ClientAddDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдена", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!discountService.existsByIdAndServiceCenterId(dto.getDiscountId(), serviceCenterId))
-            throw new ResourceNotFoundException("Скидка с идентификатором № "+dto.getDiscountId()+" не найдено", "discount/not-found");
+            throw new ResourceNotFoundException(DISCOUNT_NOT_FOUND_MESSAGE(dto.getDiscountId()), DISCOUNT_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.add(serviceCenterId, dto));
     }
 
@@ -109,9 +117,9 @@ public class ClientController {
     public ResponseEntity<?> get(@AuthenticationPrincipal User user, @PathVariable Long clientId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(clientId, serviceCenterId))
-            throw new ResourceNotFoundException("Клиент с идентификатором № "+clientId+" не найдено", "client/not-found");
+            throw new ResourceNotFoundException(CLIENT_NOT_FOUND_MESSAGE(clientId), CLIENT_NOT_FOUND_CODE);
         return ResponseEntity.ok(ClientFacade.modelToDtoResponse(service.get(clientId, serviceCenterId)));
     }
 
@@ -120,13 +128,13 @@ public class ClientController {
     public ResponseEntity<?> update(@AuthenticationPrincipal User user, @PathVariable Long clientId, @Valid @RequestBody ClientUpdateDtoRequest dto) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if (dto.getId()!=clientId)
-            throw new DtoException("Два разных id", "client/two-another-id");
+            throw new DtoException(CLIENT_TWO_ANOTHER_ID_MESSAGE, CLIENT_TWO_ANOTHER_ID_CODE);
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!discountService.existsByIdAndServiceCenterId(dto.getDiscountId(), serviceCenterId))
-            throw new ResourceNotFoundException("Скидка с идентификатором № "+dto.getDiscountId()+" не найдено", "discount/not-found");
+            throw new ResourceNotFoundException(DISCOUNT_NOT_FOUND_MESSAGE(dto.getDiscountId()), DISCOUNT_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(clientId, serviceCenterId))
-            throw new ResourceNotFoundException("Клиент с идентификатором № "+clientId+" не найдено", "client/not-found");
+            throw new ResourceNotFoundException(CLIENT_NOT_FOUND_MESSAGE(clientId), CLIENT_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.update(clientId, serviceCenterId, dto));
     }
 
@@ -135,10 +143,10 @@ public class ClientController {
     public ResponseEntity<?> delete(@AuthenticationPrincipal User user, @PathVariable Long clientId) {
         Long serviceCenterId = user.getServiceCenter().getId();
         if(!serviceCenterService.existsById(serviceCenterId))
-            throw new ResourceNotFoundException("Сервисный центр с идентификатором № "+serviceCenterId+" не найдено", "service-center/not-found");
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if (!service.existsByIdAndServiceCenterId(clientId, serviceCenterId))
-            throw new ResourceNotFoundException("Клиент с идентификатором № "+clientId+" не найдено", "client/not-found");
+            throw new ResourceNotFoundException(CLIENT_NOT_FOUND_MESSAGE(clientId), CLIENT_NOT_FOUND_CODE);
         service.delete(clientId);
-        return ResponseEntity.ok("client/deleted");
+        return ResponseEntity.ok(CLIENT_DELETED_CODE);
     }
 }

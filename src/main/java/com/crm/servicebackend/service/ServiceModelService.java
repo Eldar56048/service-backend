@@ -22,6 +22,9 @@ import org.springframework.data.domain.Sort;
 import java.util.List;
 import java.util.Map;
 
+import static com.crm.servicebackend.constant.response.service.ServiceResponseCode.SERVICE_EXISTS_BY_NAME_CODE;
+import static com.crm.servicebackend.constant.response.service.ServiceResponseMessage.SERVICE_EXISTS_BY_NAME_MESSAGE;
+
 @org.springframework.stereotype.Service
 public class ServiceModelService {
     private final ServiceRepository repository;
@@ -39,7 +42,7 @@ public class ServiceModelService {
 
     public ServiceDtoResponse add(Long serviceCenterId, ServiceAddDtoRequest dto, User user) {
         if (existsByNameAndServiceCenterId(dto.getName(), serviceCenterId))
-            throw new DtoException("Услуга с таким наименованием уже существует","service/exists-by-name");
+            throw new DtoException(SERVICE_EXISTS_BY_NAME_MESSAGE, SERVICE_EXISTS_BY_NAME_CODE);
         Service service = addDtoToModel(dto, user);
         service.setServiceCenter(serviceCenterService.get(serviceCenterId));
         return modelToDtoResponse(save(service));
@@ -69,7 +72,7 @@ public class ServiceModelService {
 
     public ServiceDtoResponse update(Long serviceId, Long serviceCenterId, ServiceUpdateDtoRequest dto, User user) {
         if (existsByNameAndIdNotLikeAndServiceCenterId(dto.getName(), serviceId, serviceCenterId))
-            throw new DtoException("Услуга с таким наименованием уже существует","service/exists-by-name");
+            throw new DtoException(SERVICE_EXISTS_BY_NAME_MESSAGE, SERVICE_EXISTS_BY_NAME_CODE);
         Service service = get(serviceId, serviceCenterId);
         service = updateDtoToModel(service, dto, user);
         return modelToDtoResponse(save(service));
