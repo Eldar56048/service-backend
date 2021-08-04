@@ -8,13 +8,17 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import static com.crm.servicebackend.constant.model.discount.DiscountValidationConstants.*;
+
 @Data
 public class DiscountAddDtoRequest {
-    @NotBlank(message = "Поле название скидки обязательно.")
-    @Length(message = "Длина название скидки должна быть больше нуля", min = 1)
+
+    @NotBlank(message = FIELD_DISCOUNT_NAME_REQUIRED_MESSAGE)
+    @Length(message = FIELD_DISCOUNT_NAME_LENGTH_MESSAGE, min = 1)
     private String discountName;
-    @NotNull(message = "Поле процент обязательно.")
-    @Min(value = 0,message = "Значение поле должно быть больше 0")
-    @Max(value = 100, message = "Значение поле должно быть меньше 100")
+
+    @NotNull(message = FIELD_PERCENTAGE_REQUIRED_MESSAGE)
+    @Min(value = 0,message = FIELD_PERCENTAGE_MIN_VALUE_MESSAGE)
+    @Max(value = 100, message = FIELD_PERCENTAGE_MAX_VALUE_MESSAGE)
     private int percentage;
 }

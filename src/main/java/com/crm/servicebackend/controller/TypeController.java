@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Map;
 
-import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseCode.SERVICE_CENTER_NOT_FOUND_CODE;
-import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseMessage.SERVICE_CENTER_NOT_FOUND_MESSAGE;
-import static com.crm.servicebackend.constant.response.type.TypeResponseCode.*;
-import static com.crm.servicebackend.constant.response.type.TypeResponseMessage.TYPE_NOT_FOUND_MESSAGE;
-import static com.crm.servicebackend.constant.response.type.TypeResponseMessage.TYPE_TWO_ANOTHER_ID_MESSAGE;
+import static com.crm.servicebackend.constant.model.serviceCenter.ServiceCenterResponseCode.SERVICE_CENTER_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.model.serviceCenter.ServiceCenterResponseMessage.SERVICE_CENTER_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.model.type.TypeResponseCode.*;
+import static com.crm.servicebackend.constant.model.type.TypeResponseMessage.TYPE_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.model.type.TypeResponseMessage.TYPE_TWO_ANOTHER_ID_MESSAGE;
 
 @RestController
 @RequestMapping("/api/v1/types")

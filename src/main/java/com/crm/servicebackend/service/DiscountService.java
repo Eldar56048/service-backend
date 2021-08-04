@@ -18,10 +18,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
-import static com.crm.servicebackend.constant.response.discount.DiscountResponseCode.DISCOUNT_EXISTS_BY_NAME_CODE;
-import static com.crm.servicebackend.constant.response.discount.DiscountResponseCode.DISCOUNT_EXISTS_BY_PERCENTAGE_CODE;
-import static com.crm.servicebackend.constant.response.discount.DiscountResponseMessage.DISCOUNT_EXISTS_BY_NAME_MESSAGE;
-import static com.crm.servicebackend.constant.response.discount.DiscountResponseMessage.DISCOUNT_EXISTS_BY_PERCENTAGE_MESSAGE;
+import static com.crm.servicebackend.constant.model.discount.DiscountResponseCode.DISCOUNT_EXISTS_BY_NAME_CODE;
+import static com.crm.servicebackend.constant.model.discount.DiscountResponseCode.DISCOUNT_EXISTS_BY_PERCENTAGE_CODE;
+import static com.crm.servicebackend.constant.model.discount.DiscountResponseMessage.DISCOUNT_EXISTS_BY_NAME_MESSAGE;
+import static com.crm.servicebackend.constant.model.discount.DiscountResponseMessage.DISCOUNT_EXISTS_BY_PERCENTAGE_MESSAGE;
 
 
 @Service

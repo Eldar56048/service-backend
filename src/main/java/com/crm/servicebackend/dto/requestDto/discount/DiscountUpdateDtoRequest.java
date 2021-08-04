@@ -5,16 +5,21 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.*;
 
+import static com.crm.servicebackend.constant.model.discount.DiscountValidationConstants.*;
+
 @Data
 public class DiscountUpdateDtoRequest {
-    @NotNull(message = "Поле id обязательно")
-    @PositiveOrZero(message = "id не может быть негативным числом")
+
+    @NotNull(message = FIELD_ID_REQUIRED_MESSAGE)
+    @PositiveOrZero(message = FIELD_ID_CANNOT_BE_NEGATIVE_MESSAGE)
     private Long id;
-    @NotBlank(message = "Поле название скидки обязательно.")
-    @Length(message = "Длина название скидки должна быть больше нуля", min = 1)
+
+    @NotBlank(message = FIELD_DISCOUNT_NAME_REQUIRED_MESSAGE)
+    @Length(message = FIELD_DISCOUNT_NAME_LENGTH_MESSAGE, min = 1)
     private String discountName;
-    @NotNull(message = "Поле процент обязательно.")
-    @Min(value = 1,message = "Значение поле должно быть больше 0")
-    @Max(value = 100, message = "Значение поле должно быть меньше 100")
+
+    @NotNull(message = FIELD_PERCENTAGE_REQUIRED_MESSAGE)
+    @Min(value = 1,message = FIELD_PERCENTAGE_MIN_VALUE_MESSAGE)
+    @Max(value = 100, message = FIELD_PERCENTAGE_MAX_VALUE_MESSAGE)
     private int percentage;
 }

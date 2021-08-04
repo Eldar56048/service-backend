@@ -30,8 +30,8 @@ import java.util.Date;
 
 import static com.crm.servicebackend.constant.SecurityConstant.TOKEN_HEADER;
 import static com.crm.servicebackend.constant.SecurityConstant.TOKEN_PREFIX;
-import static com.crm.servicebackend.constant.response.auth.AuthResponseCode.*;
-import static com.crm.servicebackend.constant.response.auth.AuthResponseCodeMessage.*;
+import static com.crm.servicebackend.constant.model.auth.AuthResponseCode.*;
+import static com.crm.servicebackend.constant.model.auth.AuthResponseCodeMessage.*;
 
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {

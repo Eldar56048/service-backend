@@ -5,15 +5,22 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.*;
 
+import static com.crm.servicebackend.constant.model.experienceModel.ExperienceModelValidationConstants.*;
+
 @Data
 public class ExperienceModelUpdateDtoRequest {
-    @NotNull(message = "Поле id обязательно")
-    @Positive(message = "id не может быть негативным числом")
+
+    @NotNull(message = FIELD_ID_REQUIRED_MESSAGE)
+    @Positive(message = FIELD_ID_CANNOT_BE_NEGATIVE_MESSAGE)
     private Long id;
-    @NotBlank(message = "Поле название опыта обязательно.")
-    @Length(message = "Длина название опыта должна быть больше нуля", min = 1)
+
+    @NotBlank(message = FIELD_NAME_REQUIRED_MESSAGE)
+    @Length(message = FIELD_NAME_LENGTH_MESSAGE, min = 1)
     private String name;
-    @Min(value = 0,message = "Значение поле должно быть больше нуля")
-    @Max(value = 100, message = "Значение поле должно быть меньше 100")
+
+    @NotNull(message = FIELD_COEFFICIENT_REQUIRED_MESSAGE)
+    @Min(value = 1,message = FIELD_COEFFICIENT_MIN_VALUE_MESSAGE)
+    @Max(value = 100, message = FIELD_COEFFICIENT_MAX_VALUE_MESSAGE)
     private int coefficient;
+
 }

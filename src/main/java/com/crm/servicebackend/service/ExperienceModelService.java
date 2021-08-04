@@ -18,10 +18,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
-import static com.crm.servicebackend.constant.response.experienceModel.ExperienceModelResponseCode.EXPERIENCE_MODEL_EXISTS_BY_COEFFICIENT_CODE;
-import static com.crm.servicebackend.constant.response.experienceModel.ExperienceModelResponseCode.EXPERIENCE_MODEL_EXISTS_BY_NAME_CODE;
-import static com.crm.servicebackend.constant.response.experienceModel.ExperienceModelResponseMessage.EXPERIENCE_MODEL_EXISTS_BY_COEFFICIENT_MESSAGE;
-import static com.crm.servicebackend.constant.response.experienceModel.ExperienceModelResponseMessage.EXPERIENCE_MODEL_EXISTS_BY_NAME_MESSAGE;
+import static com.crm.servicebackend.constant.model.experienceModel.ExperienceModelResponseCode.EXPERIENCE_MODEL_EXISTS_BY_COEFFICIENT_CODE;
+import static com.crm.servicebackend.constant.model.experienceModel.ExperienceModelResponseCode.EXPERIENCE_MODEL_EXISTS_BY_NAME_CODE;
+import static com.crm.servicebackend.constant.model.experienceModel.ExperienceModelResponseMessage.EXPERIENCE_MODEL_EXISTS_BY_COEFFICIENT_MESSAGE;
+import static com.crm.servicebackend.constant.model.experienceModel.ExperienceModelResponseMessage.EXPERIENCE_MODEL_EXISTS_BY_NAME_MESSAGE;
 
 @Service
 public class ExperienceModelService {

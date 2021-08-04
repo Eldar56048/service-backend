@@ -8,21 +8,29 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.PositiveOrZero;
 
+import static com.crm.servicebackend.constant.model.client.ClientValidationConstants.*;
+
+
 @Data
 public class ClientUpdateDtoRequest {
-    @NotNull(message = "Поле id обязательно")
-    @PositiveOrZero(message = "id не может быть негативным числом")
+
+    @NotNull(message = FIELD_ID_REQUIRED_MESSAGE)
+    @PositiveOrZero(message = FIELD_ID_CANNOT_BE_NEGATIVE_MESSAGE)
     private Long id;
-    @NotBlank(message = "Полe Имя обязательно.")
-    @Length(message = "Длина Имени должна быть больше нуля", min = 1)
+
+    @NotBlank(message = FIELD_NAME_REQUIRED_MESSAGE)
+    @Length(message = FIELD_NAME_LENGTH_MESSAGE, min = 1)
     private String name;
-    @NotBlank(message = "Поле Фамилия обязательно.")
-    @Length(message = "Длина название скидки должна быть больше нуля", min = 1)
+
+    @NotBlank(message = FIELD_SURNAME_REQUIRED_MESSAGE)
+    @Length(message = FIELD_SURNAME_LENGTH_MESSAGE, min = 1)
     private String surname;
-    @NotBlank(message = "Телефон номер обязательно.")
-    @Pattern(regexp = "[8][0-9]{10}", message = "Номер телефон не соответствует формату")
+
+    @NotBlank(message = FIELD_PHONE_NUMBER_REQUIRED_MESSAGE)
+    @Pattern(regexp = "[8][0-9]{10}", message = FIELD_PHONE_NUMBER_FORMAT_MESSAGE)
     private String phoneNumber;
-    @NotNull(message = "Поле id обязательно")
-    @PositiveOrZero(message = "id не может быть негативным числом")
+
+    @NotNull(message = FIELD_DISCOUNT_ID_REQUIRED_MESSAGE)
+    @PositiveOrZero(message = FIELD_DISCOUNT_ID_CANNOT_BE_NEGATIVE_MESSAGE)
     private Long discountId;
 }

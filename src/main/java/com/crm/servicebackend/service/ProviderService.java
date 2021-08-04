@@ -18,8 +18,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
-import static com.crm.servicebackend.constant.response.provider.ProviderResponseCode.PROVIDER_EXISTS_BY_NAME_CODE;
-import static com.crm.servicebackend.constant.response.provider.ProviderResponseMessage.PROVIDER_EXISTS_BY_NAME_MESSAGE;
+import static com.crm.servicebackend.constant.model.provider.ProviderResponseCode.PROVIDER_EXISTS_BY_NAME_CODE;
+import static com.crm.servicebackend.constant.model.provider.ProviderResponseMessage.PROVIDER_EXISTS_BY_NAME_MESSAGE;
 
 
 @Service

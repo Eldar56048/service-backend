@@ -26,10 +26,10 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 import java.util.Set;
 
-import static com.crm.servicebackend.constant.response.auth.AuthResponseCode.INVALID_USERNAME_OR_PASSWORD_CODE;
-import static com.crm.servicebackend.constant.response.auth.AuthResponseCodeMessage.INVALID_USERNAME_OR_PASSWORD_MESSAGE;
-import static com.crm.servicebackend.constant.response.user.UserResponseCode.USER_EXISTS_BY_USERNAME_CODE;
-import static com.crm.servicebackend.constant.response.user.UserResponseMessage.USER_EXISTS_BY_USERNAME_MESSAGE;
+import static com.crm.servicebackend.constant.model.auth.AuthResponseCode.INVALID_USERNAME_OR_PASSWORD_CODE;
+import static com.crm.servicebackend.constant.model.auth.AuthResponseCodeMessage.INVALID_USERNAME_OR_PASSWORD_MESSAGE;
+import static com.crm.servicebackend.constant.model.user.UserResponseCode.USER_EXISTS_BY_USERNAME_CODE;
+import static com.crm.servicebackend.constant.model.user.UserResponseMessage.USER_EXISTS_BY_USERNAME_MESSAGE;
 
 
 @Service(value = "userService")

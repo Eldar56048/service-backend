@@ -5,9 +5,14 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 
+import static com.crm.servicebackend.constant.model.order.OrderValidationConstants.FIELD_COMMENT_LENGTH_MESSAGE;
+import static com.crm.servicebackend.constant.model.order.OrderValidationConstants.FIELD_COMMENT_REQUIRED_MESSAGE;
+
 @Data
 public class OrderUpdateCommentDtoRequest {
-    @NotBlank(message = "Полe обязательно")
-    @Length(message = "Поле не должно быть пустым", min = 1)
+
+    @NotBlank(message = FIELD_COMMENT_REQUIRED_MESSAGE)
+    @Length(message = FIELD_COMMENT_LENGTH_MESSAGE, min = 1)
     private String comment;
+
 }

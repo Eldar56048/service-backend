@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.crm.servicebackend.constant.model.order.OrderResponseCode.ORDER_NOT_FOUND_OR_INVALID_PASSWORD_CODE;
+import static com.crm.servicebackend.constant.model.order.OrderResponseMessage.ORDER_NOT_FOUND_OR_INVALID_PASSWORD_MESSAGE;
+
+
 @RestController
 @RequestMapping("/api/v1/client")
 public class CustomerController {
@@ -23,7 +27,7 @@ public class CustomerController {
     @GetMapping("/order/{id}/{token}")
     public ResponseEntity<?> getOrder(@PathVariable Long id, @PathVariable String token) {
         if(!orderService.existsByIdAndToken(id, token))
-            throw new ResourceNotFoundException("Заказ № "+id+" не найдено или неправильный пароль", "order/not-found");
+            throw new ResourceNotFoundException(ORDER_NOT_FOUND_OR_INVALID_PASSWORD_MESSAGE(id), ORDER_NOT_FOUND_OR_INVALID_PASSWORD_CODE);
         return ResponseEntity.ok(OrderFacade.modelToOrderDtoResponse(orderService.getById(id)));
     }
 }

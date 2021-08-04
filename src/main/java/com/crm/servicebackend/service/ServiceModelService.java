@@ -22,8 +22,8 @@ import org.springframework.data.domain.Sort;
 import java.util.List;
 import java.util.Map;
 
-import static com.crm.servicebackend.constant.response.service.ServiceResponseCode.SERVICE_EXISTS_BY_NAME_CODE;
-import static com.crm.servicebackend.constant.response.service.ServiceResponseMessage.SERVICE_EXISTS_BY_NAME_MESSAGE;
+import static com.crm.servicebackend.constant.model.service.ServiceResponseCode.SERVICE_EXISTS_BY_NAME_CODE;
+import static com.crm.servicebackend.constant.model.service.ServiceResponseMessage.SERVICE_EXISTS_BY_NAME_MESSAGE;
 
 @org.springframework.stereotype.Service
 public class ServiceModelService {

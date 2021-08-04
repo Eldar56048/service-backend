@@ -20,13 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.crm.servicebackend.constant.response.experienceModel.ExperienceModelResponseCode.EXPERIENCE_MODEL_NOT_FOUND_CODE;
-import static com.crm.servicebackend.constant.response.experienceModel.ExperienceModelResponseMessage.EXPERIENCE_MODEL_NOT_FOUND_MESSAGE;
-import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseCode.SERVICE_CENTER_NOT_FOUND_CODE;
-import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseMessage.SERVICE_CENTER_NOT_FOUND_MESSAGE;
-import static com.crm.servicebackend.constant.response.user.UserResponseCode.*;
-import static com.crm.servicebackend.constant.response.user.UserResponseMessage.USER_NOT_FOUND_MESSAGE;
-import static com.crm.servicebackend.constant.response.user.UserResponseMessage.USER_TWO_ANOTHER_ID_MESSAGE;
+import static com.crm.servicebackend.constant.model.experienceModel.ExperienceModelResponseCode.EXPERIENCE_MODEL_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.model.experienceModel.ExperienceModelResponseMessage.EXPERIENCE_MODEL_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.model.serviceCenter.ServiceCenterResponseCode.SERVICE_CENTER_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.model.serviceCenter.ServiceCenterResponseMessage.SERVICE_CENTER_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.model.user.UserResponseCode.*;
+import static com.crm.servicebackend.constant.model.user.UserResponseMessage.USER_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.model.user.UserResponseMessage.USER_TWO_ANOTHER_ID_MESSAGE;
 
 @RestController
 @RequestMapping("/api/v1/users")

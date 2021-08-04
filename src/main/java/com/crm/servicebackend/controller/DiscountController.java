@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Map;
 
-import static com.crm.servicebackend.constant.response.discount.DiscountResponseCode.*;
-import static com.crm.servicebackend.constant.response.discount.DiscountResponseMessage.DISCOUNT_NOT_FOUND_MESSAGE;
-import static com.crm.servicebackend.constant.response.discount.DiscountResponseMessage.DISCOUNT_TWO_ANOTHER_ID_MESSAGE;
-import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseCode.SERVICE_CENTER_NOT_FOUND_CODE;
-import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseMessage.SERVICE_CENTER_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.model.discount.DiscountResponseCode.*;
+import static com.crm.servicebackend.constant.model.discount.DiscountResponseMessage.DISCOUNT_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.model.discount.DiscountResponseMessage.DISCOUNT_TWO_ANOTHER_ID_MESSAGE;
+import static com.crm.servicebackend.constant.model.serviceCenter.ServiceCenterResponseCode.SERVICE_CENTER_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.model.serviceCenter.ServiceCenterResponseMessage.SERVICE_CENTER_NOT_FOUND_MESSAGE;
 
 
 @RestController

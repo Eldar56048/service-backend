@@ -18,8 +18,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
-import static com.crm.servicebackend.constant.response.type.TypeResponseCode.TYPE_EXISTS_BY_NAME_CODE;
-import static com.crm.servicebackend.constant.response.type.TypeResponseMessage.TYPE_EXISTS_BY_NAME_MESSAGE;
+import static com.crm.servicebackend.constant.model.type.TypeResponseCode.TYPE_EXISTS_BY_NAME_CODE;
+import static com.crm.servicebackend.constant.model.type.TypeResponseMessage.TYPE_EXISTS_BY_NAME_MESSAGE;
 
 @Service
 public class TypeService {

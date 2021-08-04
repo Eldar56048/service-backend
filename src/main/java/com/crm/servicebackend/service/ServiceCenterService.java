@@ -17,8 +17,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
-import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseCode.SERVICE_CENTER_EXISTS_BY_NAME_CODE;
-import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseMessage.SERVICE_CENTER_EXISTS_BY_NAME_MESSAGE;
+import static com.crm.servicebackend.constant.model.serviceCenter.ServiceCenterResponseCode.SERVICE_CENTER_EXISTS_BY_NAME_CODE;
+import static com.crm.servicebackend.constant.model.serviceCenter.ServiceCenterResponseMessage.SERVICE_CENTER_EXISTS_BY_NAME_MESSAGE;
 
 @Service
 public class ServiceCenterService {

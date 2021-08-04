@@ -20,24 +20,24 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Map;
 
-import static com.crm.servicebackend.constant.response.discount.DiscountResponseCode.DISCOUNT_NOT_FOUND_CODE;
-import static com.crm.servicebackend.constant.response.discount.DiscountResponseMessage.DISCOUNT_NOT_FOUND_MESSAGE;
-import static com.crm.servicebackend.constant.response.model.ModelResponseCode.MODEL_NOT_FOUND_CODE;
-import static com.crm.servicebackend.constant.response.model.ModelResponseMessage.MODEL_NOT_FOUND_MESSAGE;
-import static com.crm.servicebackend.constant.response.order.OrderResponseCode.ORDER_DELETED_CODE;
-import static com.crm.servicebackend.constant.response.order.OrderResponseCode.ORDER_NOT_FOUND_CODE;
-import static com.crm.servicebackend.constant.response.order.OrderResponseMessage.ORDER_NOT_FOUND_MESSAGE;
-import static com.crm.servicebackend.constant.response.orderItem.OrderItemResponseCode.ORDER_ITEM_DELETED_CODE;
-import static com.crm.servicebackend.constant.response.orderItem.OrderItemResponseCode.ORDER_ITEM_NOT_FOUND_CODE;
-import static com.crm.servicebackend.constant.response.orderItem.OrderItemResponseMessage.ORDER_ITEM_NOT_FOUND_MESSAGE;
-import static com.crm.servicebackend.constant.response.product.ProductResponseCode.PRODUCT_NOT_FOUND_CODE;
-import static com.crm.servicebackend.constant.response.product.ProductResponseMessage.PRODUCT_NOT_FOUND_MESSAGE;
-import static com.crm.servicebackend.constant.response.service.ServiceResponseCode.SERVICE_NOT_FOUND_CODE;
-import static com.crm.servicebackend.constant.response.service.ServiceResponseMessage.SERVICE_NOT_FOUND_MESSAGE;
-import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseCode.SERVICE_CENTER_NOT_FOUND_CODE;
-import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseMessage.SERVICE_CENTER_NOT_FOUND_MESSAGE;
-import static com.crm.servicebackend.constant.response.type.TypeResponseCode.TYPE_NOT_FOUND_CODE;
-import static com.crm.servicebackend.constant.response.type.TypeResponseMessage.TYPE_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.model.discount.DiscountResponseCode.DISCOUNT_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.model.discount.DiscountResponseMessage.DISCOUNT_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.model.model.ModelResponseCode.MODEL_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.model.model.ModelResponseMessage.MODEL_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.model.order.OrderResponseCode.ORDER_DELETED_CODE;
+import static com.crm.servicebackend.constant.model.order.OrderResponseCode.ORDER_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.model.order.OrderResponseMessage.ORDER_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.model.orderItem.OrderItemResponseCode.ORDER_ITEM_DELETED_CODE;
+import static com.crm.servicebackend.constant.model.orderItem.OrderItemResponseCode.ORDER_ITEM_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.model.orderItem.OrderItemResponseMessage.ORDER_ITEM_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.model.product.ProductResponseCode.PRODUCT_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.model.product.ProductResponseMessage.PRODUCT_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.model.service.ServiceResponseCode.SERVICE_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.model.service.ServiceResponseMessage.SERVICE_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.model.serviceCenter.ServiceCenterResponseCode.SERVICE_CENTER_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.model.serviceCenter.ServiceCenterResponseMessage.SERVICE_CENTER_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.model.type.TypeResponseCode.TYPE_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.model.type.TypeResponseMessage.TYPE_NOT_FOUND_MESSAGE;
 
 @RestController
 @RequestMapping("/api/v1/orders")

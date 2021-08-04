@@ -21,6 +21,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.crm.servicebackend.constant.model.auth.AuthResponseCode.INVALID_USERNAME_OR_PASSWORD_CODE;
+import static com.crm.servicebackend.constant.model.auth.AuthResponseCode.SERVICE_CENTER_NOT_ACTIVE_CODE;
+import static com.crm.servicebackend.constant.model.auth.AuthResponseCodeMessage.INVALID_USERNAME_OR_PASSWORD_MESSAGE;
+import static com.crm.servicebackend.constant.model.auth.AuthResponseCodeMessage.SERVICE_CENTER_NOT_ACTIVE_MESSAGE;
+
 @RestController
 @RequestMapping("/api/v1/auth")
 public class LoginController {
@@ -40,7 +45,7 @@ public class LoginController {
     public ResponseEntity<?> generateToken(@RequestBody LoginDtoRequest loginUser) throws AuthenticationException {
         User user = (User) userService.loadUserByUsername(loginUser.getUsername());
         if (user.getServiceCenter().isEnabled()==false){
-            throw new AuthException("Ваш сервисный центр не активен", "service-center/not-active");
+            throw new AuthException(SERVICE_CENTER_NOT_ACTIVE_MESSAGE, SERVICE_CENTER_NOT_ACTIVE_CODE);
         }
         Authentication authentication = null;
         try {
@@ -51,7 +56,7 @@ public class LoginController {
                     )
             );
         } catch (BadCredentialsException e) {
-            throw new AuthException("Неправильное имя пользователя или пароль", "auth/invalid-username-or-password");
+            throw new AuthException(INVALID_USERNAME_OR_PASSWORD_MESSAGE, INVALID_USERNAME_OR_PASSWORD_CODE);
         }
         SecurityContextHolder.getContext().setAuthentication(authentication);
         final String token = jwtTokenUtil.generateToken(authentication);

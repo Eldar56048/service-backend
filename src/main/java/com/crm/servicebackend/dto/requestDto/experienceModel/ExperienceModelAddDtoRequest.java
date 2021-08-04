@@ -8,13 +8,17 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import static com.crm.servicebackend.constant.model.experienceModel.ExperienceModelValidationConstants.*;
+
 @Data
 public class ExperienceModelAddDtoRequest {
-    @NotBlank(message = "Поле название опыта обязательно.")
-    @Length(message = "Длина название опыта должна быть больше нуля", min = 1)
+
+    @NotBlank(message = FIELD_NAME_REQUIRED_MESSAGE)
+    @Length(message = FIELD_NAME_LENGTH_MESSAGE, min = 1)
     private String name;
-    @NotNull(message = "Поле коэффициент обязательно.")
-    @Min(value = 1,message = "Значение поле должно быть больше 1")
-    @Max(value = 100, message = "Значение поле должно быть меньше 100")
+
+    @NotNull(message = FIELD_COEFFICIENT_REQUIRED_MESSAGE)
+    @Min(value = 1,message = FIELD_COEFFICIENT_MIN_VALUE_MESSAGE)
+    @Max(value = 100, message = FIELD_COEFFICIENT_MAX_VALUE_MESSAGE)
     private int coefficient;
 }

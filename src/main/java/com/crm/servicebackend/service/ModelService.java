@@ -18,8 +18,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
-import static com.crm.servicebackend.constant.response.model.ModelResponseCode.MODEL_EXISTS_BY_NAME_CODE;
-import static com.crm.servicebackend.constant.response.model.ModelResponseMessage.MODEL_EXISTS_BY_NAME_MESSAGE;
+import static com.crm.servicebackend.constant.model.model.ModelResponseCode.MODEL_EXISTS_BY_NAME_CODE;
+import static com.crm.servicebackend.constant.model.model.ModelResponseMessage.MODEL_EXISTS_BY_NAME_MESSAGE;
 
 @Service
 public class ModelService {

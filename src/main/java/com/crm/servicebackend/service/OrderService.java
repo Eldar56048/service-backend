@@ -27,10 +27,10 @@ import java.util.Date;
 import java.util.Map;
 
 import static com.crm.servicebackend.constant.ConstantVariables.*;
-import static com.crm.servicebackend.constant.response.order.OrderResponseCode.*;
-import static com.crm.servicebackend.constant.response.order.OrderResponseMessage.*;
-import static com.crm.servicebackend.constant.response.storage.StorageResponseCode.PRODUCT_STORAGE_NOT_ENOUGH_CODE;
-import static com.crm.servicebackend.constant.response.storage.StorageResponseMessage.PRODUCT_STORAGE_NOT_ENOUGH_MESSAGE;
+import static com.crm.servicebackend.constant.model.order.OrderResponseCode.*;
+import static com.crm.servicebackend.constant.model.order.OrderResponseMessage.*;
+import static com.crm.servicebackend.constant.model.storage.StorageResponseCode.PRODUCT_STORAGE_NOT_ENOUGH_CODE;
+import static com.crm.servicebackend.constant.model.storage.StorageResponseMessage.PRODUCT_STORAGE_NOT_ENOUGH_MESSAGE;
 
 @org.springframework.stereotype.Service
 public class OrderService {

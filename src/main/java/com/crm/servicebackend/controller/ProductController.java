@@ -20,15 +20,15 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Map;
 
-import static com.crm.servicebackend.constant.response.product.ProductResponseCode.*;
-import static com.crm.servicebackend.constant.response.product.ProductResponseMessage.PRODUCT_NOT_FOUND_MESSAGE;
-import static com.crm.servicebackend.constant.response.product.ProductResponseMessage.PRODUCT_TWO_ANOTHER_ID_MESSAGE;
-import static com.crm.servicebackend.constant.response.productIncomingHistory.ProductIncomingHistoryResponseCode.PRODUCT_INCOMING_HISTORY_NOT_FOUND_CODE;
-import static com.crm.servicebackend.constant.response.productIncomingHistory.ProductIncomingHistoryResponseMessage.PRODUCT_INCOMING_HISTORY_NOT_FOUND_MESSAGE;
-import static com.crm.servicebackend.constant.response.provider.ProviderResponseCode.PROVIDER_NOT_FOUND_CODE;
-import static com.crm.servicebackend.constant.response.provider.ProviderResponseMessage.PROVIDER_NOT_FOUND_MESSAGE;
-import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseCode.SERVICE_CENTER_NOT_FOUND_CODE;
-import static com.crm.servicebackend.constant.response.serviceCenter.ServiceCenterResponseMessage.SERVICE_CENTER_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.model.product.ProductResponseCode.*;
+import static com.crm.servicebackend.constant.model.product.ProductResponseMessage.PRODUCT_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.model.product.ProductResponseMessage.PRODUCT_TWO_ANOTHER_ID_MESSAGE;
+import static com.crm.servicebackend.constant.model.productIncomingHistory.ProductIncomingHistoryResponseCode.PRODUCT_INCOMING_HISTORY_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.model.productIncomingHistory.ProductIncomingHistoryResponseMessage.PRODUCT_INCOMING_HISTORY_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.model.provider.ProviderResponseCode.PROVIDER_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.model.provider.ProviderResponseMessage.PROVIDER_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.model.serviceCenter.ServiceCenterResponseCode.SERVICE_CENTER_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.model.serviceCenter.ServiceCenterResponseMessage.SERVICE_CENTER_NOT_FOUND_MESSAGE;
 
 @RestController
 @RequestMapping("/api/v1/products")

@@ -20,10 +20,10 @@ import org.springframework.data.domain.Sort;
 import java.util.List;
 import java.util.Map;
 
-import static com.crm.servicebackend.constant.response.product.ProductResponseCode.PRODUCT_EXISTS_BY_NAME_CODE;
-import static com.crm.servicebackend.constant.response.product.ProductResponseMessage.PRODUCT_EXISTS_BY_NAME_MESSAGE;
-import static com.crm.servicebackend.constant.response.productIncomingHistory.ProductIncomingHistoryResponseCode.PRODUCT_NOT_ENOUGH_IN_STORAGE_CODE;
-import static com.crm.servicebackend.constant.response.productIncomingHistory.ProductIncomingHistoryResponseMessage.PRODUCT_NOT_ENOUGH_IN_STORAGE_MESSAGE;
+import static com.crm.servicebackend.constant.model.product.ProductResponseCode.PRODUCT_EXISTS_BY_NAME_CODE;
+import static com.crm.servicebackend.constant.model.product.ProductResponseMessage.PRODUCT_EXISTS_BY_NAME_MESSAGE;
+import static com.crm.servicebackend.constant.model.productIncomingHistory.ProductIncomingHistoryResponseCode.PRODUCT_NOT_ENOUGH_IN_STORAGE_CODE;
+import static com.crm.servicebackend.constant.model.productIncomingHistory.ProductIncomingHistoryResponseMessage.PRODUCT_NOT_ENOUGH_IN_STORAGE_MESSAGE;
 
 @org.springframework.stereotype.Service
 public class ProductService {
