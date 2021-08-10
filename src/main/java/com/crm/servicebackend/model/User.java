@@ -1,9 +1,11 @@
 package com.crm.servicebackend.model;
 
+import com.crm.servicebackend.model.enums.Role;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Set;

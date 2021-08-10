@@ -6,8 +6,8 @@ import com.crm.servicebackend.dto.responseDto.model.ModelDtoResponse;
 import com.crm.servicebackend.dto.responseDto.orderItem.OrderItemOrderDtoResponse;
 import com.crm.servicebackend.dto.responseDto.type.TypeDtoResponse;
 import com.crm.servicebackend.dto.responseDto.user.UserItemDtoResponse;
-import com.crm.servicebackend.model.Status;
-import com.crm.servicebackend.model.TypesOfPayments;
+import com.crm.servicebackend.model.enums.Status;
+import com.crm.servicebackend.model.enums.TypesOfPayments;
 import lombok.Data;
 
 import java.util.Date;
@@ -39,5 +39,6 @@ public class OrderDtoResponse {
     private String discountName;
     private int discountPercent;
     private String token;
+    private String serialNumber;
     private Date guaranteeDate;
 }

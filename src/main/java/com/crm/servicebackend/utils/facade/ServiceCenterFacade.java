@@ -28,6 +28,7 @@ public class ServiceCenterFacade {
         serviceCenter.setName(dto.getName());
         serviceCenter.setAddress(dto.getAddress());
         serviceCenter.setPhoneNumber(dto.getPhoneNumber());
+        serviceCenter.setEmail(dto.getEmail());
         serviceCenter.setComment(dto.getComment());
         return serviceCenter;
     }

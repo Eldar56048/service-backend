@@ -11,6 +11,8 @@ import com.crm.servicebackend.dto.responseDto.statistics.Count;
 import com.crm.servicebackend.dto.responseDto.statistics.NetProfit;
 import com.crm.servicebackend.exception.domain.DtoException;
 import com.crm.servicebackend.model.*;
+import com.crm.servicebackend.model.enums.Status;
+import com.crm.servicebackend.model.enums.TypesOfPayments;
 import com.crm.servicebackend.repository.OrderRepository;
 import com.crm.servicebackend.utils.RandomGenerator;
 import com.crm.servicebackend.utils.facade.OrderFacade;
@@ -153,6 +155,8 @@ public class OrderService {
         order.setNotified(false);
         order.setToken(RandomGenerator.generate(8));
         order.setServiceCenter(serviceCenterService.get(serviceCenterId));
+        if (dto.getSerialNumber() != null)
+            order.setSerialNumber(dto.getSerialNumber());
         order = save(order);
         return modelToOrderForListDtoResponse(order);
     }
@@ -199,6 +203,8 @@ public class OrderService {
         order.setModel(modelService.get(dto.getModel_id(), serviceCenterId));
         order.setModelCompany(dto.getModelType());
         order.setProblem(dto.getProblem());
+        if (dto.getSerialNumber() != null)
+            order.setSerialNumber(dto.getSerialNumber());
         return modelToDtoResponse(save(order));
     }
 

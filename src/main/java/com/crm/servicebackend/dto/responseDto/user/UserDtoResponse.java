@@ -1,7 +1,7 @@
 package com.crm.servicebackend.dto.responseDto.user;
 
 import com.crm.servicebackend.dto.responseDto.experienceModel.ExperienceModelDtoResponse;
-import com.crm.servicebackend.model.Role;
+import com.crm.servicebackend.model.enums.Role;
 import lombok.Data;
 
 import java.util.Set;

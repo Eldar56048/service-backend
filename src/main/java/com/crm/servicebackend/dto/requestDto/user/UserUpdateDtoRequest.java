@@ -1,6 +1,6 @@
 package com.crm.servicebackend.dto.requestDto.user;
 
-import com.crm.servicebackend.model.Role;
+import com.crm.servicebackend.model.enums.Role;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 

@@ -51,6 +51,8 @@ public class OrderFacade {
             dto.setDiscountName(model.getDiscountName());
         if (model.getToken() != null)
             dto.setToken(model.getToken());
+        if (model.getSerialNumber() != null)
+            dto.setSerialNumber(model.getSerialNumber());
         if (model.getGuaranteeDate() != null)
             dto.setGuaranteeDate(model.getGuaranteeDate());
         dto.setDiscountPercent(model.getDiscountPercent());

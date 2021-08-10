@@ -3,7 +3,7 @@ package com.crm.servicebackend.repository;
 import com.crm.servicebackend.dto.responseDto.statistics.Count;
 import com.crm.servicebackend.dto.responseDto.statistics.NetProfit;
 import com.crm.servicebackend.model.Order;
-import com.crm.servicebackend.model.Status;
+import com.crm.servicebackend.model.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

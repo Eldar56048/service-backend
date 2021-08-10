@@ -4,9 +4,9 @@ import com.crm.servicebackend.dto.requestDto.service.ServiceAddDtoRequest;
 import com.crm.servicebackend.dto.requestDto.service.ServiceUpdateDtoRequest;
 import com.crm.servicebackend.dto.responseDto.service.ServiceDtoResponse;
 import com.crm.servicebackend.dto.responseDto.service.ServiceItemDtoResponse;
-import com.crm.servicebackend.model.Role;
 import com.crm.servicebackend.model.Service;
 import com.crm.servicebackend.model.User;
+import com.crm.servicebackend.model.enums.Role;
 
 public class ServiceFacade {
     public static ServiceDtoResponse modelToDtoResponse(Service model) {

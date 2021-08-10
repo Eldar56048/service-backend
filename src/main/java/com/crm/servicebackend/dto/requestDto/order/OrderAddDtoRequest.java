@@ -41,4 +41,6 @@ public class OrderAddDtoRequest {
     @Positive(message = FIELD_DISCOUNT_ID_CANNOT_BE_NEGATIVE_MESSAGE)
     private Long discount_id;
 
+    private String serialNumber;
+
 }

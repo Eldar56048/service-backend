@@ -1,4 +1,4 @@
-package com.crm.servicebackend.model;
+package com.crm.servicebackend.model.enums;
 
 public enum Status {
     DONE{

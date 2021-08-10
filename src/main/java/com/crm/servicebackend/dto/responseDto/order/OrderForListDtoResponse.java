@@ -1,6 +1,6 @@
 package com.crm.servicebackend.dto.responseDto.order;
 
-import com.crm.servicebackend.model.Status;
+import com.crm.servicebackend.model.enums.Status;
 import lombok.Data;
 
 import java.util.Date;

@@ -21,14 +21,17 @@ public class ServiceCenter {
     @Column(nullable = false)
     private String phoneNumber;
     @Column(nullable = false)
+    private String email;
+    @Column(nullable = false)
     private boolean isEnabled;
     @Column(nullable = false)
     private String comment;
 
-    public ServiceCenter(String name, String address, String phoneNumber, boolean isEnabled, String comment) {
+    public ServiceCenter(String name, String address, String phoneNumber, String email, boolean isEnabled, String comment) {
         this.name = name;
         this.address = address;
         this.phoneNumber = phoneNumber;
+        this.email = email;
         this.isEnabled = isEnabled;
         this.comment = comment;
     }

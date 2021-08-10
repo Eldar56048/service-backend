@@ -1,5 +1,7 @@
 package com.crm.servicebackend.model;
 
+import com.crm.servicebackend.model.enums.Status;
+import com.crm.servicebackend.model.enums.TypesOfPayments;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -66,6 +68,7 @@ public class Order {
     private int discountPercent;
     @Column(nullable = false)
     private String token;
+    private String serialNumber;
     private Date guaranteeDate;
 
     public Order(String clientName, String phoneNumber, String problem, User acceptedUser, Type type, Model model, String modelCompany) {
