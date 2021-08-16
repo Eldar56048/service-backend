@@ -3,10 +3,7 @@ package com.crm.servicebackend.dto.requestDto.serviceCenter;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.*;
 
 @Data
 public class ServiceCenterUpdateDtoRequest {
@@ -24,6 +21,10 @@ public class ServiceCenterUpdateDtoRequest {
     @NotBlank(message = "Телефон номер обязательно.")
     @Pattern(regexp = "[8][0-9]{10}", message = "Номер телефон не соответствует формату")
     private String phoneNumber;
+
+    @NotBlank(message = "Email обязательно.")
+    @Email(message = "Не соответсвует формату email.")
+    private String email;
 
     @NotNull(message = "Поле Активен обязательно.")
     private Boolean isEnabled;

@@ -55,6 +55,8 @@ public class OrderFacade {
             dto.setSerialNumber(model.getSerialNumber());
         if (model.getGuaranteeDate() != null)
             dto.setGuaranteeDate(model.getGuaranteeDate());
+        if (model.getServiceCenter() != null)
+            dto.setServiceCenter(ServiceCenterFacade.modelToDtoResponse(model.getServiceCenter()));
         dto.setDiscountPercent(model.getDiscountPercent());
         return dto;
     }

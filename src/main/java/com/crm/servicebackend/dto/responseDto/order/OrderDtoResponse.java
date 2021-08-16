@@ -4,6 +4,7 @@ import com.crm.servicebackend.dto.responseDto.client.ClientDtoResponse;
 import com.crm.servicebackend.dto.responseDto.discount.DiscountDtoResponse;
 import com.crm.servicebackend.dto.responseDto.model.ModelDtoResponse;
 import com.crm.servicebackend.dto.responseDto.orderItem.OrderItemOrderDtoResponse;
+import com.crm.servicebackend.dto.responseDto.serviceCenter.ServiceCenterDtoResponse;
 import com.crm.servicebackend.dto.responseDto.type.TypeDtoResponse;
 import com.crm.servicebackend.dto.responseDto.user.UserItemDtoResponse;
 import com.crm.servicebackend.model.enums.Status;
@@ -41,4 +42,5 @@ public class OrderDtoResponse {
     private String token;
     private String serialNumber;
     private Date guaranteeDate;
+    private ServiceCenterDtoResponse serviceCenter;
 }

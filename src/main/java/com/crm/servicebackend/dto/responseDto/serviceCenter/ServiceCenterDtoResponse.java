@@ -8,6 +8,7 @@ public class ServiceCenterDtoResponse {
     private String name;
     private String address;
     private String phoneNumber;
+    private String email;
     private Boolean isEnabled;
     private String comment;
 }

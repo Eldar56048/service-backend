@@ -24,8 +24,7 @@ import static com.crm.servicebackend.constant.model.order.OrderResponseCode.ORDE
 import static com.crm.servicebackend.constant.model.order.OrderResponseMessage.ORDER_NOT_FOUND_MESSAGE;
 import static com.crm.servicebackend.constant.model.serviceCenter.ServiceCenterResponseCode.SERVICE_CENTER_NOT_FOUND_CODE;
 import static com.crm.servicebackend.constant.model.serviceCenter.ServiceCenterResponseMessage.SERVICE_CENTER_NOT_FOUND_MESSAGE;
-import static com.crm.servicebackend.utils.facade.DocumentFacade.modelListToDtoResponseList;
-import static com.crm.servicebackend.utils.facade.DocumentFacade.modelToDtoResponse;
+import static com.crm.servicebackend.utils.facade.DocumentFacade.*;
 
 @RestController
 @RequestMapping("/api/v1/documents")
@@ -45,9 +44,9 @@ public class DocumentController {
             throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if(!orderService.existsByIdAndServiceCenterId(dto.getOrderId(), serviceCenterId))
             throw new ResourceNotFoundException(ORDER_NOT_FOUND_MESSAGE(dto.getOrderId()), ORDER_NOT_FOUND_CODE);
-        if(!documentService.existsByOrderIdAndDocumentType(dto.getOrderId(), dto.getDocumentType()))
+        if(documentService.existsByOrderIdAndDocumentType(dto.getOrderId(), dto.getDocumentType()))
             throw new DtoException(DOCUMENT_FOR_ORDER_ALREADY_CREATED_MESSAGE, DOCUMENT_FOR_ORDER_ALREADY_CREATED_CODE);
-        return ResponseEntity.ok(modelToDtoResponse(documentService.createDocument(dto.getOrderId(), dto.getDocumentType(), serviceCenterId)));
+        return ResponseEntity.ok(modelToDocumentOrderDtoResponse(documentService.createDocument(dto.getOrderId(), dto.getDocumentType(), serviceCenterId)));
     }
 
     @GetMapping("/{documentId}")
@@ -82,6 +81,6 @@ public class DocumentController {
             throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
         if(!orderService.existsByIdAndServiceCenterId(orderId, serviceCenterId))
             throw new ResourceNotFoundException(ORDER_NOT_FOUND_MESSAGE(orderId), ORDER_NOT_FOUND_CODE);
-        return ResponseEntity.ok(modelListToDtoResponseList(documentService.getAllByOrder(orderId, serviceCenterId)));
+        return ResponseEntity.ok(modelListToDocumentOrderDtoList(documentService.getAllByOrder(orderId, serviceCenterId)));
     }
 }

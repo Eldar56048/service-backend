@@ -17,6 +17,8 @@ public class ServiceCenterFacade {
             dto.setAddress(model.getAddress());
         if (model.getPhoneNumber() != null)
             dto.setPhoneNumber(model.getPhoneNumber());
+        if (model.getEmail() != null)
+            dto.setEmail(model.getEmail());
         if (model.getComment() != null)
             dto.setComment(model.getComment());
         dto.setIsEnabled(model.isEnabled());
@@ -37,6 +39,7 @@ public class ServiceCenterFacade {
         model.setName(dto.getName());
         model.setAddress(dto.getAddress());
         model.setPhoneNumber(dto.getPhoneNumber());
+        model.setEmail(dto.getEmail());
         model.setEnabled(dto.getIsEnabled());
         model.setComment(dto.getComment());
         return model;
