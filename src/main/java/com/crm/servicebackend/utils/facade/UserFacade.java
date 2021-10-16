@@ -4,8 +4,12 @@ import com.crm.servicebackend.dto.requestDto.user.UserAddDtoRequest;
 import com.crm.servicebackend.dto.requestDto.user.UserAddOwnerDtoRequest;
 import com.crm.servicebackend.dto.requestDto.user.UserUpdateDtoRequest;
 import com.crm.servicebackend.dto.responseDto.user.UserDtoResponse;
+import com.crm.servicebackend.dto.responseDto.user.UserForSelectDtoResponse;
 import com.crm.servicebackend.dto.responseDto.user.UserItemDtoResponse;
 import com.crm.servicebackend.model.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserFacade {
     public static UserDtoResponse modelToDtoResponse(User model) {
@@ -53,6 +57,28 @@ public class UserFacade {
         model.setPhoneNumber(dto.getPhoneNumber());
         model.setUsername(dto.getUsername());
         return model;
+    }
+
+    public static UserForSelectDtoResponse modelToSelectDtoResponse(User model) {
+        UserForSelectDtoResponse dto = new UserForSelectDtoResponse();
+        if (model.getId() != null) {
+            dto.setValue(model.getId());
+        }
+        if (model.getSurname() != null) {
+            dto.setSurname(model.getSurname());
+        }
+        if (model.getName() != null) {
+            dto.setName(model.getName());
+        }
+        return dto;
+    }
+
+    public static List<UserForSelectDtoResponse> modelListToSelectDtoResponseList(List<User> modelList) {
+        List<UserForSelectDtoResponse> dtoList = new ArrayList<>();
+        for(User model : modelList) {
+            dtoList.add(modelToSelectDtoResponse(model));
+        }
+        return dtoList;
     }
 
     public static UserAddDtoRequest  AddOwnerDtoToAddDto(UserAddOwnerDtoRequest model) {

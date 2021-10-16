@@ -9,6 +9,7 @@ import com.crm.servicebackend.model.enums.Role;
 import com.crm.servicebackend.service.ExperienceModelService;
 import com.crm.servicebackend.service.ServiceCenterService;
 import com.crm.servicebackend.service.UserService;
+import com.crm.servicebackend.utils.facade.UserFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -61,6 +62,15 @@ public class UserController {
         else
             response = service.getAllAndFilter(serviceCenterId,page-1, size, sortBy, orderBy, title);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/select")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<?> getAllUsersForSelect(@AuthenticationPrincipal User user) {
+        Long serviceCenterId = user.getServiceCenter().getId();
+        if(!serviceCenterService.existsById(serviceCenterId))
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
+        return ResponseEntity.ok(UserFacade.modelListToSelectDtoResponseList(service.getAllForSelect(serviceCenterId)));
     }
 
     @GetMapping("/roles/all")

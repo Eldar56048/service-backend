@@ -23,6 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -103,6 +104,10 @@ public class UserService implements UserDetailsService {
         else
             pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
         return PaginationResponseFacade.response(pageToDtoPage(repository.findAndFilter(serviceCenterId, title, pageable)));
+    }
+
+    public List<User> getAllForSelect(Long serviceCenterId) {
+        return repository.findAllByServiceCenterId(serviceCenterId);
     }
 
     public User update(Long userId, Long serviceCenterId, UserUpdateDtoRequest dto, User user) {

@@ -4,6 +4,10 @@ import com.crm.servicebackend.dto.requestDto.order.OrderAddDtoRequest;
 import com.crm.servicebackend.dto.requestDto.order.OrderAddProductDtoRequest;
 import com.crm.servicebackend.dto.requestDto.order.OrderAddServiceDtoRequest;
 import com.crm.servicebackend.dto.requestDto.order.OrderUpdateCommentDtoRequest;
+import com.crm.servicebackend.dto.requestDto.report.AcceptedOrdersReportDtoRequest;
+import com.crm.servicebackend.dto.requestDto.report.CalculateSalaryRequestDto;
+import com.crm.servicebackend.dto.requestDto.report.DoneOrdersReportDtoRequest;
+import com.crm.servicebackend.dto.requestDto.report.GivenOrdersReportDtoRequest;
 import com.crm.servicebackend.exception.domain.ResourceNotFoundException;
 import com.crm.servicebackend.model.Order;
 import com.crm.servicebackend.model.User;
@@ -38,6 +42,8 @@ import static com.crm.servicebackend.constant.model.serviceCenter.ServiceCenterR
 import static com.crm.servicebackend.constant.model.serviceCenter.ServiceCenterResponseMessage.SERVICE_CENTER_NOT_FOUND_MESSAGE;
 import static com.crm.servicebackend.constant.model.type.TypeResponseCode.TYPE_NOT_FOUND_CODE;
 import static com.crm.servicebackend.constant.model.type.TypeResponseMessage.TYPE_NOT_FOUND_MESSAGE;
+import static com.crm.servicebackend.constant.model.user.UserResponseCode.USER_NOT_FOUND_CODE;
+import static com.crm.servicebackend.constant.model.user.UserResponseMessage.USER_NOT_FOUND_MESSAGE;
 
 @RestController
 @RequestMapping("/api/v1/orders")
@@ -59,6 +65,8 @@ public class OrderController {
     private ServiceModelService serviceModelService;
     @Autowired
     private OrderItemService orderItemService;
+    @Autowired
+    private UserService userService;
 
     @GetMapping
     public ResponseEntity<?> getAll(
@@ -265,5 +273,61 @@ public class OrderController {
         if(!service.existsByIdAndServiceCenterId(orderId, serviceCenterId))
             throw new ResourceNotFoundException(ORDER_NOT_FOUND_MESSAGE(orderId), ORDER_NOT_FOUND_CODE);
         return ResponseEntity.ok(service.updatePaymentType(orderId, serviceCenterId,payment));
+    }
+
+    @GetMapping("/calculate-salary")
+    public ResponseEntity<?> calculateMasterSalary(@RequestParam(defaultValue = "1") int page,
+                                                   @RequestParam(defaultValue = "1") int size,
+                                                   @RequestParam(defaultValue = "id") String sortBy,
+                                                   @RequestParam(defaultValue = "desc") String orderBy,
+                                                   @Valid CalculateSalaryRequestDto dto,
+                                                   @AuthenticationPrincipal User user) {
+        Long serviceCenterId = user.getServiceCenter().getId();
+        if(!serviceCenterService.existsById(serviceCenterId))
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
+        if(!userService.existsByIdAndServiceCenterId(dto.getUserId(), serviceCenterId)){
+            throw new ResourceNotFoundException(USER_NOT_FOUND_MESSAGE(dto.getUserId()), USER_NOT_FOUND_CODE);
+        }
+        return ResponseEntity.ok(service.calculateMasterSalary(serviceCenterId, dto, page-1, size, sortBy, orderBy));
+    }
+
+    @GetMapping("/report-accepted")
+    public ResponseEntity<?> acceptedOrdersReport(@RequestParam(defaultValue = "1") int page,
+                                                  @RequestParam(defaultValue = "1") int size,
+                                                  @RequestParam(defaultValue = "id") String sortBy,
+                                                  @RequestParam(defaultValue = "desc") String orderBy,
+                                                  @Valid AcceptedOrdersReportDtoRequest dto,
+                                                  @AuthenticationPrincipal User user) {
+        Long serviceCenterId = user.getServiceCenter().getId();
+        if(!serviceCenterService.existsById(serviceCenterId))
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
+        return ResponseEntity.ok(service.acceptedOrdersReport(serviceCenterId, dto, page-1, size, sortBy, orderBy));
+    }
+
+    @GetMapping("/report-done")
+    public ResponseEntity<?> doneOrdersReport(@RequestParam(defaultValue = "1") int page,
+                                              @RequestParam(defaultValue = "1") int size,
+                                              @RequestParam(defaultValue = "id") String sortBy,
+                                              @RequestParam(defaultValue = "desc") String orderBy,
+                                              @Valid DoneOrdersReportDtoRequest dto,
+                                              @AuthenticationPrincipal User user) {
+        Long serviceCenterId = user.getServiceCenter().getId();
+        if(!serviceCenterService.existsById(serviceCenterId))
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
+        return ResponseEntity.ok(service.doneOrdersReport(serviceCenterId, dto, page-1, size, sortBy, orderBy));
+    }
+
+    @GetMapping("/report-given")
+    public ResponseEntity<?> givenOrdersReport(@RequestParam(defaultValue = "1") int page,
+                                               @RequestParam(defaultValue = "1") int size,
+                                               @RequestParam(defaultValue = "id") String sortBy,
+                                               @RequestParam(defaultValue = "desc") String orderBy,
+                                               @Valid GivenOrdersReportDtoRequest dto,
+                                               @AuthenticationPrincipal User user) {
+        Long serviceCenterId = user.getServiceCenter().getId();
+        System.out.println(sortBy+" ______________________________");
+        if(!serviceCenterService.existsById(serviceCenterId))
+            throw new ResourceNotFoundException(SERVICE_CENTER_NOT_FOUND_MESSAGE(serviceCenterId), SERVICE_CENTER_NOT_FOUND_CODE);
+        return ResponseEntity.ok(service.givenOrdersReport(serviceCenterId, dto, page-1, size, sortBy, orderBy));
     }
 }

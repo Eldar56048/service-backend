@@ -4,9 +4,15 @@ import com.crm.servicebackend.dto.requestDto.order.OrderAddDtoRequest;
 import com.crm.servicebackend.dto.requestDto.order.OrderAddProductDtoRequest;
 import com.crm.servicebackend.dto.requestDto.order.OrderAddServiceDtoRequest;
 import com.crm.servicebackend.dto.requestDto.order.OrderUpdateCommentDtoRequest;
+import com.crm.servicebackend.dto.requestDto.report.AcceptedOrdersReportDtoRequest;
+import com.crm.servicebackend.dto.requestDto.report.CalculateSalaryRequestDto;
+import com.crm.servicebackend.dto.requestDto.report.DoneOrdersReportDtoRequest;
+import com.crm.servicebackend.dto.requestDto.report.GivenOrdersReportDtoRequest;
 import com.crm.servicebackend.dto.responseDto.order.OrderDtoResponse;
 import com.crm.servicebackend.dto.responseDto.order.OrderForListDtoResponse;
 import com.crm.servicebackend.dto.responseDto.orderItem.OrderItemOrderDtoResponse;
+import com.crm.servicebackend.dto.responseDto.report.GivenOrderSum;
+import com.crm.servicebackend.dto.responseDto.report.MasterSalary;
 import com.crm.servicebackend.dto.responseDto.statistics.Count;
 import com.crm.servicebackend.dto.responseDto.statistics.NetProfit;
 import com.crm.servicebackend.exception.domain.DtoException;
@@ -24,6 +30,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.JpaSort;
 
 import java.util.Date;
 import java.util.Map;
@@ -413,6 +420,50 @@ public class OrderService {
             }
         }
         return false;
+    }
+
+    public Map<String, Object> calculateMasterSalary(Long serviceCenterId, CalculateSalaryRequestDto dto, int page, int size, String sortBy, String orderBy) {
+        Pageable pageable;
+        if (orderBy.equals("asc"))
+            pageable = PageRequest.of(page, size, Sort.by(sortBy).ascending());
+        else
+            pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
+        Page<MasterSalary> data = repository.getMasterSalary(serviceCenterId, dto.getUserId(), dto.getDate1(), dto.getDate2(), pageable);
+        Map<String, Object> pagination = PaginationResponseFacade.response(data);
+        //Map<String, Object> pagination = new HashMap<>();
+        pagination.put("sum", repository.getMasterSalarySum(serviceCenterId, dto.getUserId(), dto.getDate1(), dto.getDate2()));
+        return pagination;
+    }
+
+    public Map<String, Object> acceptedOrdersReport(Long serviceCenterId, AcceptedOrdersReportDtoRequest dto, int page, int size, String sortBy, String orderBy) {
+        Pageable pageable;
+        if (orderBy.equals("asc"))
+            pageable = PageRequest.of(page, size, JpaSort.unsafe(Sort.Direction.ASC, "("+sortBy+")"));
+        else
+            pageable = PageRequest.of(page, size, JpaSort.unsafe(Sort.Direction.DESC, "("+sortBy+")"));
+        return PaginationResponseFacade.response(repository.getAcceptedOrdersReport(serviceCenterId, dto.getDate1(), dto.getDate2(), pageable));
+    }
+
+    public Map<String, Object> doneOrdersReport(Long serviceCenterId, DoneOrdersReportDtoRequest dto, int page, int size, String sortBy, String orderBy) {
+        Pageable pageable;
+        if (orderBy.equals("asc"))
+            pageable = PageRequest.of(page, size, JpaSort.unsafe(Sort.Direction.ASC, "("+sortBy+")"));
+        else
+            pageable = PageRequest.of(page, size, JpaSort.unsafe(Sort.Direction.DESC, "("+sortBy+")"));
+        return PaginationResponseFacade.response(repository.getDoneOrdersReport(serviceCenterId, dto.getDate1(), dto.getDate2(), pageable));
+    }
+
+    public Map<String, Object> givenOrdersReport(Long serviceCenterId, GivenOrdersReportDtoRequest dto, int page, int size, String sortBy, String orderBy) {
+        Pageable pageable;
+        System.out.println(size+" =======================");
+        if (orderBy.equals("asc"))
+            pageable = PageRequest.of(page, size, JpaSort.unsafe(Sort.Direction.ASC, "("+sortBy+")"));
+        else
+            pageable = PageRequest.of(page, size, JpaSort.unsafe(Sort.Direction.DESC, "("+sortBy+")"));
+        Map<String, Object> pagination = PaginationResponseFacade.response(repository.getGivenOrdersReport(serviceCenterId, dto.getDate1(), dto.getDate2(), pageable));
+        GivenOrderSum givenOrderSum = repository.getGivenOrderSum(serviceCenterId, dto.getDate1(), dto.getDate2());
+        pagination.put("sum", givenOrderSum);
+        return pagination;
     }
 
     public boolean existsByIdAndToken(Long id, String token) {
