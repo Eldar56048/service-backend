@@ -32,6 +32,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.JpaSort;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
@@ -428,6 +429,10 @@ public class OrderService {
             pageable = PageRequest.of(page, size, Sort.by(sortBy).ascending());
         else
             pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(dto.getDate2());
+        cal.add(Calendar.DATE ,1);
+        dto.setDate2(cal.getTime());
         Page<MasterSalary> data = repository.getMasterSalary(serviceCenterId, dto.getUserId(), dto.getDate1(), dto.getDate2(), pageable);
         Map<String, Object> pagination = PaginationResponseFacade.response(data);
         //Map<String, Object> pagination = new HashMap<>();
@@ -441,6 +446,10 @@ public class OrderService {
             pageable = PageRequest.of(page, size, JpaSort.unsafe(Sort.Direction.ASC, "("+sortBy+")"));
         else
             pageable = PageRequest.of(page, size, JpaSort.unsafe(Sort.Direction.DESC, "("+sortBy+")"));
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(dto.getDate2());
+        cal.add(Calendar.DATE ,1);
+        dto.setDate2(cal.getTime());
         return PaginationResponseFacade.response(repository.getAcceptedOrdersReport(serviceCenterId, dto.getDate1(), dto.getDate2(), pageable));
     }
 
@@ -450,6 +459,10 @@ public class OrderService {
             pageable = PageRequest.of(page, size, JpaSort.unsafe(Sort.Direction.ASC, "("+sortBy+")"));
         else
             pageable = PageRequest.of(page, size, JpaSort.unsafe(Sort.Direction.DESC, "("+sortBy+")"));
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(dto.getDate2());
+        cal.add(Calendar.DATE ,1);
+        dto.setDate2(cal.getTime());
         return PaginationResponseFacade.response(repository.getDoneOrdersReport(serviceCenterId, dto.getDate1(), dto.getDate2(), pageable));
     }
 
@@ -460,6 +473,10 @@ public class OrderService {
             pageable = PageRequest.of(page, size, JpaSort.unsafe(Sort.Direction.ASC, "("+sortBy+")"));
         else
             pageable = PageRequest.of(page, size, JpaSort.unsafe(Sort.Direction.DESC, "("+sortBy+")"));
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(dto.getDate2());
+        cal.add(Calendar.DATE ,1);
+        dto.setDate2(cal.getTime());
         Map<String, Object> pagination = PaginationResponseFacade.response(repository.getGivenOrdersReport(serviceCenterId, dto.getDate1(), dto.getDate2(), pageable));
         GivenOrderSum givenOrderSum = repository.getGivenOrderSum(serviceCenterId, dto.getDate1(), dto.getDate2());
         pagination.put("sum", givenOrderSum);
