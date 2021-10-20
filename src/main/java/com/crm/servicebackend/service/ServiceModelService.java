@@ -6,19 +6,23 @@ import com.crm.servicebackend.dto.responseDto.service.ServiceDtoResponse;
 import com.crm.servicebackend.dto.responseDto.service.ServiceForSelectDtoResponse;
 import com.crm.servicebackend.dto.responseDto.statistics.*;
 import com.crm.servicebackend.exception.domain.DtoException;
-import com.crm.servicebackend.model.Order;
-import com.crm.servicebackend.model.OrderItem;
-import com.crm.servicebackend.model.Service;
-import com.crm.servicebackend.model.User;
+import com.crm.servicebackend.model.*;
 import com.crm.servicebackend.repository.ServiceRepository;
 import com.crm.servicebackend.utils.facade.PaginationResponseFacade;
 import com.crm.servicebackend.utils.facade.ServiceFacade;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -144,5 +148,38 @@ public class ServiceModelService {
 
     public Boolean existsByIdAndServiceCenterId(Long serviceId, Long serviceCenterId) {
         return repository.existsByIdAndServiceCenterId(serviceId, serviceCenterId);
+    }
+
+    public void readServiceJson(ServiceCenter serviceCenter) {
+        JSONParser jsonParser = new JSONParser();
+
+        try (FileReader reader = new FileReader("services.json"))
+        {
+            //Read JSON file
+            Object obj = jsonParser.parse(reader);
+
+            JSONArray employeeList = (JSONArray) obj;
+            System.out.println(employeeList);
+
+            //Iterate over employee array
+            employeeList.forEach( emp -> parseJson( (JSONObject) emp , serviceCenter) );
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void parseJson(JSONObject serviceJson, ServiceCenter serviceCenter) {
+        Service service = new Service();
+        service.setName((String) serviceJson.get("service_name"));
+        service.setDescription((String) serviceJson.get("service_description"));
+        service.setPercentage(Integer.parseInt((String) serviceJson.get("percentage")));
+        service.setPrice(Integer.parseInt((String) serviceJson.get("price")));
+        service.setServiceCenter(serviceCenter);
+        repository.save(service);
     }
 }

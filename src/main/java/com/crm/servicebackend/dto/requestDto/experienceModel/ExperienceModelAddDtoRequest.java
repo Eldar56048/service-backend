@@ -18,7 +18,7 @@ public class ExperienceModelAddDtoRequest {
     private String name;
 
     @NotNull(message = FIELD_COEFFICIENT_REQUIRED_MESSAGE)
-    @Min(value = 1,message = FIELD_COEFFICIENT_MIN_VALUE_MESSAGE)
+    @Min(value = 0,message = FIELD_COEFFICIENT_MIN_VALUE_MESSAGE)
     @Max(value = 100, message = FIELD_COEFFICIENT_MAX_VALUE_MESSAGE)
     private int coefficient;
 }

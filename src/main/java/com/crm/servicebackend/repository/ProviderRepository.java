@@ -13,6 +13,7 @@ import java.util.List;
 public interface ProviderRepository extends JpaRepository<Provider, Long> {
     Page<Provider> findAllByServiceCenterId(Long serviceCenterId, Pageable pageable);
     Provider findByIdAndServiceCenterId(Long providerId, Long serviceCenterId);
+    Provider findByNameAndServiceCenterId(String name, Long serviceCenterId);
     Boolean existsByIdAndServiceCenterId(Long providerId, Long serviceCenterId);
     Boolean existsByNameAndServiceCenterId(String name, Long serviceCenterId);
     Boolean existsByNameAndIdNotLikeAndServiceCenterId(String name, Long providerId, Long serviceCenterId);

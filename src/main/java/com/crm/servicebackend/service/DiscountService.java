@@ -39,9 +39,9 @@ public class DiscountService {
     public DiscountDtoResponse add(Long serviceCenterId, DiscountAddDtoRequest dto) {
         if (existsByDiscountNameAndServiceCenterId(dto.getDiscountName(), serviceCenterId))
             throw new DtoException(DISCOUNT_EXISTS_BY_NAME_MESSAGE, DISCOUNT_EXISTS_BY_NAME_CODE);
-        if (existsByPercentageAndServiceCenterId(dto.getPercentage(), serviceCenterId))
+        /*if (existsByPercentageAndServiceCenterId(dto.getPercentage(), serviceCenterId))
             throw new DtoException(DISCOUNT_EXISTS_BY_PERCENTAGE_MESSAGE, DISCOUNT_EXISTS_BY_PERCENTAGE_CODE);
-        Discount discount = addDtoToModel(dto);
+        */Discount discount = addDtoToModel(dto);
         discount.setServiceCenter(serviceCenterService.get(serviceCenterId));
         return modelToDtoResponse(save(discount));
     }
@@ -67,15 +67,19 @@ public class DiscountService {
     public DiscountDtoResponse update(Long discountId, Long serviceCenterId, DiscountUpdateDtoRequest dto) {
         if (existsByDiscountNameAndIdNotLikeAndServiceCenterId(dto.getDiscountName(), discountId, serviceCenterId))
             throw new DtoException(DISCOUNT_EXISTS_BY_NAME_MESSAGE, DISCOUNT_EXISTS_BY_NAME_CODE);
-        if (existsByPercentageAndIdNotLikeAndServiceCenterId(dto.getPercentage(), discountId, serviceCenterId))
+        /*if (existsByPercentageAndIdNotLikeAndServiceCenterId(dto.getPercentage(), discountId, serviceCenterId))
             throw new DtoException(DISCOUNT_EXISTS_BY_PERCENTAGE_MESSAGE, DISCOUNT_EXISTS_BY_PERCENTAGE_CODE);
-        Discount discount = get(discountId, serviceCenterId);
+        */Discount discount = get(discountId, serviceCenterId);
         discount = updateDtoToModel(discount, dto);
         return modelToDtoResponse(save(discount));
     }
 
     public Discount get(Long discountId, Long serviceCenterId) {
         return repository.findByIdAndServiceCenterId(discountId, serviceCenterId);
+    }
+
+    public Discount getByName(String discountName, Long serviceCenterId){
+        return repository.findByDiscountNameAndServiceCenterId(discountName, serviceCenterId);
     }
 
     public Page<DiscountDtoResponse> pageToDtoPage(Page<Discount> modelPage) {

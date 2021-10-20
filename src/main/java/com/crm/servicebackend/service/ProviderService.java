@@ -115,4 +115,8 @@ public class ProviderService {
     public Boolean existsByIdAndServiceCenterId(Long providerId, Long serviceCenterId) {
         return repository.existsByIdAndServiceCenterId(providerId, serviceCenterId);
     }
+
+    public Provider getProviderByName(String providerName, Long serviceCenterId){
+        return repository.findByNameAndServiceCenterId(providerName, serviceCenterId);
+    }
 }

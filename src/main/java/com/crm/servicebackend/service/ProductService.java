@@ -12,11 +12,20 @@ import com.crm.servicebackend.model.*;
 import com.crm.servicebackend.repository.ProductRepository;
 import com.crm.servicebackend.utils.facade.PaginationResponseFacade;
 import com.crm.servicebackend.utils.facade.ProductFacade;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -186,6 +195,63 @@ public class ProductService {
             storageService.save(storage);
         } else {
             throw new DtoException(PRODUCT_NOT_ENOUGH_IN_STORAGE_MESSAGE(historyId, incomingHistory.getQuantity()-storage.getQuantity()), PRODUCT_NOT_ENOUGH_IN_STORAGE_CODE);
+        }
+    }
+
+    public void readProductJson(ServiceCenter serviceCenter) {
+        JSONParser jsonParser = new JSONParser();
+
+        try (FileReader reader = new FileReader("products.json"))
+        {
+            //Read JSON file
+            Object obj = jsonParser.parse(reader);
+
+            JSONArray employeeList = (JSONArray) obj;
+            System.out.println(employeeList);
+
+            //Iterate over employee array
+            employeeList.forEach( emp -> {
+                try {
+                    parseJson( (JSONObject) emp , serviceCenter);
+                } catch (java.text.ParseException e) {
+                    e.printStackTrace();
+                }
+            });
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void parseJson(JSONObject productJson, ServiceCenter serviceCenter) throws java.text.ParseException {
+        Product product = new Product();
+        product.setName((String) productJson.get("product_name"));
+        product.setDescription((String) productJson.get("description"));
+        product.setPrice(Integer.parseInt((String) productJson.get("price")));
+        product.setServiceCenter(serviceCenter);
+        product = save(product);
+        Storage storage = new Storage();
+        storage.setProduct(product);
+        storage.setServiceCenter(serviceCenter);
+        storage.setQuantity(Integer.parseInt((String) productJson.get("storage_quantity")));
+        storageService.save(storage);
+        String providerName = (String) productJson.get("provider");
+        int quantity = Integer.parseInt((String) productJson.get("storage_quantity"));
+        if(providerName!=null&&quantity>0) {
+            IncomingHistory incomingHistory = new IncomingHistory();
+            incomingHistory.setProduct(product);
+            incomingHistory.setPrice(Integer.parseInt((String) productJson.get("income_price")));
+            incomingHistory.setServiceCenter(serviceCenter);
+            incomingHistory.setQuantity(quantity);
+            Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS").parse((String) productJson.get("date"));
+            incomingHistory.setDate(date);
+            Provider provider = providerService.getProviderByName(providerName, serviceCenter.getId());
+            incomingHistory.setProvider(provider);
+            incomingHistoryService.save(incomingHistory);
         }
     }
 

@@ -13,6 +13,7 @@ import java.util.List;
 public interface DiscountRepository extends JpaRepository<Discount, Long> {
     Page<Discount> findAllByServiceCenterId(Long serviceCenterId, Pageable pageable);
     Discount findByIdAndServiceCenterId(Long discountId, Long serviceCenterId);
+    Discount findByDiscountNameAndServiceCenterId(String discountName, Long serviceCenterId);
     Boolean existsByIdAndServiceCenterId(Long discountId, Long serviceCenterId);
     Boolean existsByDiscountNameAndServiceCenterId(String discountName, Long serviceCenterId);
     Boolean existsByDiscountNameAndIdNotLikeAndServiceCenterId(String discountName, Long discountId, Long serviceCenterId);

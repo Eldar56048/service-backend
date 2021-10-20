@@ -41,4 +41,16 @@ public class Client {
         this.phoneNumber = phoneNumber;
         this.discount = discount;
     }
+
+    @Override
+    public String toString() {
+        return "Client{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", discount=" + discount +
+                ", serviceCenter=" + serviceCenter +
+                '}';
+    }
 }

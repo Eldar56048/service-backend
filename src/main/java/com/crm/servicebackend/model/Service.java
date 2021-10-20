@@ -32,4 +32,16 @@ public class Service {
         this.price = price;
         this.percentage = percentage;
     }
+
+    @Override
+    public String toString() {
+        return "Service{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", percentage=" + percentage +
+                ", price=" + price +
+                ", serviceCenter=" + serviceCenter +
+                '}';
+    }
 }

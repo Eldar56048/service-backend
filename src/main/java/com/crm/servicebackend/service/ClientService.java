@@ -4,9 +4,14 @@ import com.crm.servicebackend.dto.requestDto.client.ClientAddDtoRequest;
 import com.crm.servicebackend.dto.requestDto.client.ClientUpdateDtoRequest;
 import com.crm.servicebackend.dto.responseDto.client.ClientDtoResponse;
 import com.crm.servicebackend.model.Client;
+import com.crm.servicebackend.model.ServiceCenter;
 import com.crm.servicebackend.repository.ClientRepository;
 import com.crm.servicebackend.utils.facade.ClientFacade;
 import com.crm.servicebackend.utils.facade.PaginationResponseFacade;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +19,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -99,5 +107,37 @@ public class ClientService {
 
     public Boolean existsByIdAndServiceCenterId(Long clientId, Long serviceCenterId) {
         return repository.existsByIdAndServiceCenterId(clientId, serviceCenterId);
+    }
+
+    public void readClientJson(ServiceCenter serviceCenter) {
+        JSONParser jsonParser = new JSONParser();
+
+        try (FileReader reader = new FileReader("clients.json"))
+        {
+            //Read JSON file
+            Object obj = jsonParser.parse(reader);
+
+            JSONArray employeeList = (JSONArray) obj;
+
+            //Iterate over employee array
+            employeeList.forEach( emp -> parseJson( (JSONObject) emp , serviceCenter) );
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void parseJson(JSONObject clientJson, ServiceCenter serviceCenter) {
+        Client client = new Client();
+        client.setName((String) clientJson.get("client_name"));
+        client.setSurname((String) clientJson.get("client_surname"));
+        client.setPhoneNumber((String) clientJson.get("phone_number"));
+        client.setDiscount(discountService.getByName((String) clientJson.get("discount_name"), serviceCenter.getId()));
+        client.setServiceCenter(serviceCenter);
+        repository.save(client);
     }
 }
